@@ -1,53 +1,45 @@
 package ir.mmd.androidDev.vault
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedContent
+import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
+import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
+import androidx.biometric.BiometricPrompt
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.Card
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import ir.mmd.androidDev.vault.ui.component.SearchField
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
-import ir.mmd.androidDev.vault.util.add
+import java.util.concurrent.Executors
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
+	private val executor = Executors.newSingleThreadExecutor()
+	private val promptInfo by lazy {
+		BiometricPrompt.PromptInfo
+			.Builder()
+			.apply {
+				setTitle("Open Vault")
+				setSubtitle("Prove this is you")
+				setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
+			}
+			.build()
+	}
+	
 	override fun onCreate(savedInstanceState: Bundle?) {
+		installSplashScreen()
 		super.onCreate(savedInstanceState)
 		setContent {
 			VaultTheme {
@@ -56,95 +48,89 @@ class MainActivity : ComponentActivity() {
 		}
 	}
 	
-	override fun onPause() {
-		super.onPause()
-		finish()
+	fun authenticate(onSuccess: () -> Unit) {
+		BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
+			override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+				runOnUiThread(onSuccess)
+			}
+		}).authenticate(promptInfo)
 	}
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainComponent() {
-	var searchFieldExpanded by remember { mutableStateOf(false) }
-	val searchTerm = remember { mutableStateOf("") }
-	val listState = rememberLazyListState()
-	val fabExpanded by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
+	val navController = rememberNavController()
 	
-	BackHandler(searchFieldExpanded) {
-		searchFieldExpanded = false
+	Surface(Modifier.fillMaxSize()) {
+		NavHost(navController = navController, startDestination = "welcome") {
+			composable(
+				route = "welcome",
+				enterTransition = { fadeIn() },
+				exitTransition = { fadeOut() }
+			) { WelcomePage(navController) }
+			
+			composable(
+				route = "home",
+				enterTransition = {
+					when (initialState.destination.route) {
+						"welcome" -> fadeIn()
+						"settings" -> slideInHorizontally { it }
+						"content" -> slideInVertically { -it }
+						else -> null
+					}
+				},
+				exitTransition = {
+					when (targetState.destination.route) {
+						"welcome" -> fadeOut()
+						"settings" -> slideOutHorizontally { it }
+						"content" -> slideOutVertically { -it }
+						else -> null
+					}
+				}
+			) { HomePage(navController) }
+			
+			composable(
+				route = "settings",
+				enterTransition = {
+					when (initialState.destination.route) {
+						"welcome" -> fadeIn()
+						"home" -> slideInHorizontally { -it }
+						else -> null
+					}
+				},
+				exitTransition = {
+					when (targetState.destination.route) {
+						"welcome" -> fadeOut()
+						"home" -> slideOutHorizontally { -it }
+						else -> null
+					}
+				}
+			) { SettingsPage() }
+			
+			composable(
+				route = "content",
+				enterTransition = {
+					when (initialState.destination.route) {
+						"welcome" -> fadeIn()
+						"home" -> slideInVertically { it }
+						else -> null
+					}
+				},
+				exitTransition = {
+					when (targetState.destination.route) {
+						"welcome" -> fadeOut()
+						"home" -> slideOutVertically { it }
+						else -> null
+					}
+				}
+			) { ContentPage() }
+		}
 	}
 	
-	Scaffold(
-		topBar = {
-			Surface(
-				modifier = Modifier.shadow(8.dp)
-			) {
-				AnimatedContent(
-					targetState = searchFieldExpanded,
-					label = "TopAppBar & SearchField",
-					transitionSpec = {
-						if (targetState) {
-							slideInVertically { height -> -height } + fadeIn() togetherWith
-								slideOutVertically { height -> height } + fadeOut()
-						} else {
-							slideInVertically { height -> height } + fadeIn() togetherWith
-								slideOutVertically { height -> -height } + fadeOut()
-						}
-					}
-				) {
-					if (it) {
-						SearchField(searchTerm) { searchFieldExpanded = false }
-					} else {
-						CenterAlignedTopAppBar(
-							title = { Text(stringResource(R.string.app_name)) },
-							navigationIcon = {
-								IconButton(onClick = { /*TODO*/ }) {
-									Icon(Icons.Rounded.Settings, "Settings")
-								}
-							},
-							actions = {
-								IconButton(onClick = { searchFieldExpanded = true }) {
-									Icon(Icons.Rounded.Search, "Search")
-								}
-							}
-						)
-					}
-				}
-			}
-		},
-		floatingActionButton = {
-			ExtendedFloatingActionButton(
-				{ Text("Add") },
-				{ Icon(Icons.Rounded.Add, "Add") },
-				expanded = fabExpanded,
-				onClick = { /*TODO*/ }
-			)
-		}
-	) { paddingValues ->
-		LazyColumn(
-			contentPadding = paddingValues.add(8.dp, 8.dp, 8.dp, 88.dp),
-			verticalArrangement = Arrangement.spacedBy(8.dp),
-			state = listState,
-		) {
-			repeat(10) {
-				item {
-					Card(
-						modifier = Modifier.fillMaxWidth()
-					) {
-						Row(
-							verticalAlignment = Alignment.CenterVertically,
-							horizontalArrangement = Arrangement.SpaceBetween,
-							modifier = Modifier
-								.fillMaxWidth()
-								.padding(16.dp)
-						) {
-							Text("My National Code")
-							IconButton(onClick = { /*TODO*/ }) {
-								Icon(Icons.Rounded.MoreVert, "More")
-							}
-						}
-					}
-				}
+	LifecycleResumeEffect(Unit) {
+		onPauseOrDispose {
+			navController.navigate("welcome") {
+				launchSingleTop = true
 			}
 		}
 	}

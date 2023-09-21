@@ -1,11 +1,5 @@
 package ir.mmd.androidDev.vault
 
-import android.content.Intent
-import android.os.Bundle
-import androidx.activity.compose.setContent
-import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
-import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
-import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -19,62 +13,33 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.fragment.app.FragmentActivity
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import ir.mmd.androidDev.vault.ui.theme.Typography
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
-import java.util.concurrent.Executors
 
-class WelcomeActivity : FragmentActivity() {
-	private val executor = Executors.newSingleThreadExecutor()
-	private val biometricPrompt by lazy {
-		BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
-			override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
-				startActivity(Intent(this@WelcomeActivity, MainActivity::class.java))
-				finish()
-			}
-		})
-	}
-	private val promptInfo by lazy {
-		BiometricPrompt.PromptInfo
-			.Builder()
-			.apply {
-				setTitle("Open Vault")
-				setSubtitle("Prove this is you")
-				setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
-			}
-			.build()
-	}
-	
-	override fun onCreate(savedInstanceState: Bundle?) {
-		installSplashScreen()
-		super.onCreate(savedInstanceState)
-		setContent {
-			VaultTheme {
-				MainComponent()
+@Composable
+fun WelcomePage(navController: NavController) {
+	val activity = LocalContext.current as MainActivity
+	val onAuthSuccess = remember {
+		{
+			if (!navController.popBackStack()) {
+				navController.navigate("home") {
+					launchSingleTop = true
+					popUpTo("welcome") {
+						inclusive = true
+					}
+				}
 			}
 		}
 	}
-	
-	override fun onStart() {
-		super.onStart()
-		authenticate()
-	}
-	
-	fun authenticate() {
-		biometricPrompt.authenticate(promptInfo)
-	}
-}
-
-@Composable
-private fun MainComponent() {
-	val activity = LocalContext.current as WelcomeActivity
 	
 	Surface {
 		Box(
@@ -95,7 +60,9 @@ private fun MainComponent() {
 					"Fingerprint",
 					Modifier
 						.size(120.dp)
-						.clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) { activity.authenticate() },
+						.clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {
+							activity.authenticate(onAuthSuccess)
+						},
 				)
 				
 				Text(
@@ -105,13 +72,17 @@ private fun MainComponent() {
 			}
 		}
 	}
+	
+	LaunchedEffect(Unit) {
+		activity.authenticate(onAuthSuccess)
+	}
 }
 
 @Preview
 @Composable
 private fun LightPreview() {
 	VaultTheme(darkTheme = false) {
-		MainComponent()
+		WelcomePage(rememberNavController())
 	}
 }
 
@@ -119,6 +90,6 @@ private fun LightPreview() {
 @Composable
 private fun DarkPreview() {
 	VaultTheme(darkTheme = true) {
-		MainComponent()
+		WelcomePage(rememberNavController())
 	}
 }
