@@ -1,5 +1,6 @@
 package ir.mmd.androidDev.vault
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -7,11 +8,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -19,6 +23,7 @@ import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -35,8 +40,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -45,10 +56,13 @@ import ir.mmd.androidDev.vault.ui.component.SearchField
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 import ir.mmd.androidDev.vault.util.add
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun HomePage(navController: NavController) {
+fun HomePage(navController: NavController, items: Map<String, String>) {
 	var searchFieldExpanded by remember { mutableStateOf(false) }
+	val context = LocalContext.current
+	val clipboardManager = LocalClipboardManager.current
+	val hapticFeedback = LocalHapticFeedback.current
 	val searchTerm = remember { mutableStateOf("") }
 	val listState = rememberLazyListState()
 	val fabExpanded by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
@@ -109,22 +123,32 @@ fun HomePage(navController: NavController) {
 			verticalArrangement = Arrangement.spacedBy(8.dp),
 			state = listState,
 		) {
-			repeat(10) {
-				item {
-					Card(
-						modifier = Modifier.fillMaxWidth()
-					) {
-						Row(
-							verticalAlignment = Alignment.CenterVertically,
-							horizontalArrangement = Arrangement.SpaceBetween,
-							modifier = Modifier
-								.fillMaxWidth()
-								.padding(16.dp)
-						) {
-							Text("My National Code")
-							IconButton(onClick = { /*TODO*/ }) {
-								Icon(Icons.Rounded.MoreVert, "More")
+			items(items.entries.toList()) { (key, value) ->
+				Card(
+					modifier = Modifier
+						.fillMaxWidth()
+						.clip(CardDefaults.shape)
+						.combinedClickable(
+							onClick = {},
+							onLongClick = {
+								clipboardManager.setText(AnnotatedString(value))
+								hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+								Toast
+									.makeText(context, "Copied!", Toast.LENGTH_SHORT)
+									.show()
 							}
+						)
+				) {
+					Row(
+						verticalAlignment = Alignment.CenterVertically,
+						horizontalArrangement = Arrangement.SpaceBetween,
+						modifier = Modifier
+							.fillMaxWidth()
+							.padding(16.dp)
+					) {
+						Text(key)
+						IconButton(onClick = { /*TODO*/ }) {
+							Icon(Icons.Rounded.MoreVert, "More")
 						}
 					}
 				}
@@ -137,7 +161,7 @@ fun HomePage(navController: NavController) {
 @Composable
 private fun LightPreview() {
 	VaultTheme(darkTheme = false) {
-		HomePage(rememberNavController())
+		HomePage(rememberNavController(), mapOf("credential" to "SECRET"))
 	}
 }
 
@@ -145,6 +169,6 @@ private fun LightPreview() {
 @Composable
 private fun DarkPreview() {
 	VaultTheme(darkTheme = true) {
-		HomePage(rememberNavController())
+		HomePage(rememberNavController(), mapOf("credential" to "SECRET"))
 	}
 }

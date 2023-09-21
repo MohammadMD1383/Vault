@@ -87,7 +87,7 @@ private fun MainComponent() {
 						else -> null
 					}
 				}
-			) { HomePage(navController) }
+			) { HomePage(navController, mapOf("test" to "SECRET")/* todo */) }
 			
 			composable(
 				route = "settings",
