@@ -128,11 +128,11 @@ private fun MainComponent() {
 	}
 	
 	LifecycleResumeEffect(Unit) {
-		onPauseOrDispose {
-			navController.navigate("welcome") {
-				launchSingleTop = true
-			}
+		navController.navigate("welcome") {
+			launchSingleTop = true
 		}
+		
+		onPauseOrDispose { }
 	}
 }
 
