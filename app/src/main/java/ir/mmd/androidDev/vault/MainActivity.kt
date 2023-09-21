@@ -14,6 +14,9 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -26,6 +29,7 @@ import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 import java.util.concurrent.Executors
 
 class MainActivity : FragmentActivity() {
+	private val items = mutableStateMapOf("credential" to "SECRET")
 	private val executor = Executors.newSingleThreadExecutor()
 	private val promptInfo by lazy {
 		BiometricPrompt.PromptInfo
@@ -43,7 +47,7 @@ class MainActivity : FragmentActivity() {
 		super.onCreate(savedInstanceState)
 		setContent {
 			VaultTheme {
-				MainComponent()
+				MainComponent(items)
 			}
 		}
 	}
@@ -58,7 +62,7 @@ class MainActivity : FragmentActivity() {
 }
 
 @Composable
-private fun MainComponent() {
+private fun MainComponent(items: SnapshotStateMap<String, String>) {
 	val navController = rememberNavController()
 	
 	Surface(Modifier.fillMaxSize()) {
@@ -87,7 +91,7 @@ private fun MainComponent() {
 						else -> null
 					}
 				}
-			) { HomePage(navController, mapOf("test" to "SECRET")/* todo */) }
+			) { HomePage(navController, items/* todo */) }
 			
 			composable(
 				route = "settings",
@@ -123,7 +127,7 @@ private fun MainComponent() {
 						else -> null
 					}
 				}
-			) { ContentPage() }
+			) { ContentPage(navController) }
 		}
 	}
 	
@@ -139,15 +143,17 @@ private fun MainComponent() {
 @Preview
 @Composable
 private fun LightPreview() {
+	val items = remember { mutableStateMapOf("credential" to "SECRET") }
 	VaultTheme(darkTheme = false) {
-		MainComponent()
+		MainComponent(items)
 	}
 }
 
 @Preview
 @Composable
 private fun DarkPreview() {
+	val items = remember { mutableStateMapOf("credential" to "SECRET") }
 	VaultTheme(darkTheme = true) {
-		MainComponent()
+		MainComponent(items)
 	}
 }

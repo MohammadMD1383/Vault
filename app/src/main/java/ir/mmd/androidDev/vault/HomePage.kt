@@ -35,9 +35,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,7 +61,7 @@ import ir.mmd.androidDev.vault.util.add
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun HomePage(navController: NavController, items: Map<String, String>) {
+fun HomePage(navController: NavController, items: SnapshotStateMap<String, String>) {
 	var searchFieldExpanded by remember { mutableStateOf(false) }
 	val context = LocalContext.current
 	val clipboardManager = LocalClipboardManager.current
@@ -155,20 +158,34 @@ fun HomePage(navController: NavController, items: Map<String, String>) {
 			}
 		}
 	}
+	
+	navController.currentBackStackEntry
+		?.savedStateHandle
+		?.getLiveData<Pair<String, String>>("new")
+		?.observeAsState()
+		?.value
+		?.let { (key, content) ->
+			items[key] = content
+			navController.currentBackStackEntry
+				?.savedStateHandle
+				?.remove<Pair<String, String>>("new")
+		}
 }
 
 @Preview
 @Composable
 private fun LightPreview() {
+	val items = remember { mutableStateMapOf("credential" to "SECRET") }
 	VaultTheme(darkTheme = false) {
-		HomePage(rememberNavController(), mapOf("credential" to "SECRET"))
+		HomePage(rememberNavController(), items)
 	}
 }
 
 @Preview
 @Composable
 private fun DarkPreview() {
+	val items = remember { mutableStateMapOf("credential" to "SECRET") }
 	VaultTheme(darkTheme = true) {
-		HomePage(rememberNavController(), mapOf("credential" to "SECRET"))
+		HomePage(rememberNavController(), items)
 	}
 }
