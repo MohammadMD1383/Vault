@@ -109,7 +109,7 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 						else -> null
 					}
 				}
-			) { SettingsPage() }
+			) { SettingsPage(navController) }
 			
 			composable(
 				route = "content/{mode}",

@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import ir.mmd.androidDev.vault.ui.theme.Typography
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 import ir.mmd.androidDev.vault.util.rememberNavigationData
 import ir.mmd.androidDev.vault.util.returnWithNavigationResult
@@ -43,81 +44,87 @@ fun ContentPage(navController: NavController) {
 	var keyHasProblem by remember { mutableStateOf(false) }
 	var contentHasProblem by remember { mutableStateOf(false) }
 	
-	Surface {
-		Column(
-			horizontalAlignment = Alignment.CenterHorizontally,
+	Column(
+		horizontalAlignment = Alignment.CenterHorizontally,
+		modifier = Modifier
+			.fillMaxSize()
+			.padding(16.dp)
+	) {
+		Text(
+			text = if (isEditMode) "Edit Item" else "New Item",
+			style = Typography.headlineMedium,
 			modifier = Modifier
-				.fillMaxSize()
-				.padding(16.dp)
+				.fillMaxWidth()
+				.padding(8.dp, 8.dp, 8.dp, 16.dp)
+		)
+		
+		OutlinedTextField(
+			value = key,
+			onValueChange = {
+				key = it
+				keyHasProblem = it.isBlank()
+			},
+			leadingIcon = { Icon(Icons.Rounded.VpnKey, "Key") },
+			trailingIcon = if (keyHasProblem) {
+				{ Icon(Icons.Rounded.ErrorOutline, "Error", tint = MaterialTheme.colorScheme.error) }
+			} else null,
+			supportingText = if (keyHasProblem) {
+				{ Text("Key cannot be empty") }
+			} else null,
+			label = { Text("Key") },
+			readOnly = isEditMode,
+			isError = keyHasProblem,
+			singleLine = true,
+			modifier = Modifier.fillMaxWidth()
+		)
+		
+		OutlinedTextField(
+			value = content,
+			onValueChange = {
+				content = it
+				contentHasProblem = it.isEmpty()
+			},
+			label = { Text("Content") },
+			trailingIcon = if (contentHasProblem) {
+				{ Icon(Icons.Rounded.ErrorOutline, "Error", tint = MaterialTheme.colorScheme.error) }
+			} else null,
+			supportingText = if (contentHasProblem) {
+				{ Text("Content cannot be empty") }
+			} else null,
+			isError = contentHasProblem,
+			singleLine = false,
+			modifier = Modifier
+				.fillMaxWidth()
+				.weight(1f)
+		)
+		
+		Row(
+			horizontalArrangement = Arrangement.spacedBy(16.dp),
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(top = 16.dp)
 		) {
-			OutlinedTextField(
-				value = key,
-				onValueChange = {
-					key = it
-					keyHasProblem = it.isBlank()
-				},
-				leadingIcon = { Icon(Icons.Rounded.VpnKey, "Key") },
-				trailingIcon = if (keyHasProblem) {
-					{ Icon(Icons.Rounded.ErrorOutline, "Error", tint = MaterialTheme.colorScheme.error) }
-				} else null,
-				supportingText = if (keyHasProblem) {
-					{ Text("Key cannot be empty") }
-				} else null,
-				label = { Text("Key") },
-				readOnly = isEditMode,
-				isError = keyHasProblem,
-				singleLine = true,
-				modifier = Modifier.fillMaxWidth()
-			)
-			
-			OutlinedTextField(
-				value = content,
-				onValueChange = {
-					content = it
-					contentHasProblem = it.isEmpty()
-				},
-				label = { Text("Content") },
-				trailingIcon = if (contentHasProblem) {
-					{ Icon(Icons.Rounded.ErrorOutline, "Error", tint = MaterialTheme.colorScheme.error) }
-				} else null,
-				supportingText = if (contentHasProblem) {
-					{ Text("Content cannot be empty") }
-				} else null,
-				isError = contentHasProblem,
-				singleLine = false,
-				modifier = Modifier
-					.fillMaxWidth()
-					.weight(1f)
-			)
-			
-			Row(
-				horizontalArrangement = Arrangement.spacedBy(8.dp),
-				modifier = Modifier
-					.fillMaxWidth()
-					.padding(top = 8.dp)
-			) {
-				Button(
-					modifier = Modifier.weight(1f),
-					onClick = {
-						keyHasProblem = key.isBlank()
-						contentHasProblem = content.isEmpty()
-						
-						if (keyHasProblem || contentHasProblem) {
-							return@Button
-						}
-						
-						navController.returnWithNavigationResult(if (isEditMode) "edit" else "new", key to content)
+			Button(
+				modifier = Modifier.weight(1f),
+				onClick = {
+					keyHasProblem = key.isBlank()
+					contentHasProblem = content.isEmpty()
+					
+					if (keyHasProblem || contentHasProblem) {
+						return@Button
 					}
-				) {
-					Text("Save")
+					
+					navController.returnWithNavigationResult(if (isEditMode) "edit" else "new", key to content)
 				}
-				
-				OutlinedButton(
-					modifier = Modifier.weight(1f),
-					onClick = { navController.popBackStack() }
-				) {
-					Text("Cancel")
-				}
+			) {
+				Text("Save")
+			}
+			
+			OutlinedButton(
+				modifier = Modifier.weight(1f),
+				onClick = { navController.popBackStack() }
+			) {
+				Text("Cancel")
 			}
 		}
 	}
