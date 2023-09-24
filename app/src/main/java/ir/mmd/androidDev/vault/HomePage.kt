@@ -3,9 +3,16 @@ package ir.mmd.androidDev.vault
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterExitState
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -20,6 +27,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -43,6 +51,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -70,8 +80,9 @@ import ir.mmd.androidDev.vault.ui.component.SearchField
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 import ir.mmd.androidDev.vault.util.add
 import ir.mmd.androidDev.vault.util.onNavigationResult
+import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HomePage(navController: NavController, items: SnapshotStateMap<String, String>) {
 	var searchFieldExpanded by remember { mutableStateOf(false) }
@@ -161,64 +172,71 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 					}
 				}
 			} else LazyColumn(
-				contentPadding = paddingValues.add(8.dp, 8.dp, 8.dp, 88.dp),
-				verticalArrangement = Arrangement.spacedBy(8.dp),
+				contentPadding = paddingValues.add(8.dp, 0.dp, 8.dp, (32 + 56).dp),
 				state = listState,
 			) {
 				items(items.entries.toList()) { (key, content) ->
+					val matchesFilter = searchTerm.value.isEmpty() || searchTerm.value in key
 					var menuIsExpanded by remember { mutableStateOf(false) }
 					
-					Card(
-						modifier = Modifier
-							.fillMaxWidth()
-							.clip(CardDefaults.shape)
-							.combinedClickable(
-								onClick = {},
-								onLongClick = {
-									clipboardManager.setText(AnnotatedString(content))
-									hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-									Toast
-										.makeText(context, "Copied!", Toast.LENGTH_SHORT)
-										.show()
-								}
-							)
+					AnimatedVisibility(
+						visible = matchesFilter,
+						enter = fadeIn() + expandVertically(),
+						exit = fadeOut() + shrinkVertically()
 					) {
-						Row(
-							verticalAlignment = Alignment.CenterVertically,
-							horizontalArrangement = Arrangement.SpaceBetween,
+						Card(
 							modifier = Modifier
 								.fillMaxWidth()
-								.padding(16.dp, 16.dp, 4.dp, 16.dp)
+								.padding(top = 8.dp)
+								.clip(CardDefaults.shape)
+								.combinedClickable(
+									onClick = {},
+									onLongClick = {
+										clipboardManager.setText(AnnotatedString(content))
+										hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+										Toast
+											.makeText(context, "Copied!", Toast.LENGTH_SHORT)
+											.show()
+									}
+								)
 						) {
-							Text(key)
-							
-							Box(contentAlignment = Alignment.Center) {
-								IconButton(onClick = { menuIsExpanded = true }) {
-									Icon(Icons.Rounded.MoreVert, "More")
-								}
+							Row(
+								verticalAlignment = Alignment.CenterVertically,
+								horizontalArrangement = Arrangement.SpaceBetween,
+								modifier = Modifier
+									.fillMaxWidth()
+									.padding(16.dp, 16.dp, 4.dp, 16.dp)
+							) {
+								Text(key)
 								
-								DropdownMenu(
-									expanded = menuIsExpanded,
-									onDismissRequest = { menuIsExpanded = false }
-								) {
-									DropdownMenuItem(
-										text = { IconText(Icons.Rounded.Edit, "Edit") },
-										onClick = {
-											menuIsExpanded = false
-											navController.navigate("content/edit") { launchSingleTop = true }
-											navController.currentBackStackEntry
-												?.savedStateHandle
-												?.set("data", key to content)
-										}
-									)
+								Box(contentAlignment = Alignment.Center) {
+									IconButton(onClick = { menuIsExpanded = true }) {
+										Icon(Icons.Rounded.MoreVert, "More")
+									}
 									
-									DropdownMenuItem(
-										text = { IconText(Icons.Rounded.DeleteOutline, "Delete") },
-										onClick = {
-											menuIsExpanded = false
-											items.remove(key)
-										}
-									)
+									DropdownMenu(
+										expanded = menuIsExpanded,
+										onDismissRequest = { menuIsExpanded = false }
+									) {
+										DropdownMenuItem(
+											text = { IconText(Icons.Rounded.Edit, "Edit") },
+											onClick = {
+												menuIsExpanded = false
+												navController.navigate("content/edit") { launchSingleTop = true }
+												navController.currentBackStackEntry
+													?.savedStateHandle
+													?.set("data", key to content)
+											}
+										)
+										
+										DropdownMenuItem(
+											text = { IconText(Icons.Rounded.DeleteOutline, "Delete") },
+											onClick = {
+												menuIsExpanded = false
+												items.remove(key)
+											}
+										)
+									}
 								}
 							}
 						}

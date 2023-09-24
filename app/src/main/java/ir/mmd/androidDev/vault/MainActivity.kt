@@ -29,7 +29,20 @@ import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 import java.util.concurrent.Executors
 
 class MainActivity : FragmentActivity() {
-	private val items = mutableStateMapOf("credential" to "SECRET")
+	private val items = mutableStateMapOf(
+		"credential" to "SECRET",
+		"bank number" to "515645687",
+		"bank cvv2" to "566",
+		"bank password" to "PAsko*99d",
+		"bank pin" to "1114",
+		"my credential" to "cisaji jacsj iajco siajs",
+		"credit card" to "6038 6636 3366 3325",
+		"credit 2" to "515445464",
+		"credit another" to "5545454",
+		"another credit" to "najhsdhaisdhiahsd",
+		"new credit" to "jasidjasjdia"
+	)
+	
 	private val executor = Executors.newSingleThreadExecutor()
 	private val promptInfo by lazy {
 		BiometricPrompt.PromptInfo
