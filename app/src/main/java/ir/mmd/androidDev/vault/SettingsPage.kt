@@ -11,23 +11,20 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import ir.mmd.androidDev.vault.model.AppSettings
 import ir.mmd.androidDev.vault.ui.component.TextSwitch
 import ir.mmd.androidDev.vault.ui.theme.Typography
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 
 @Composable
 fun SettingsPage(navController: NavController) {
-	var authenticationEnabled by remember { mutableStateOf(true) }
-	var authenticationExpiresOnPause by remember { mutableStateOf(true) }
+	val context = LocalContext.current
 	
 	Column(Modifier.fillMaxSize()) {
 		Text(
@@ -38,16 +35,16 @@ fun SettingsPage(navController: NavController) {
 		
 		TextSwitch(
 			text = "Enable authentication",
-			checked = authenticationEnabled,
-			onCheckedChange = { authenticationEnabled = it },
+			checked = AppSettings.authenticationEnabled,
+			onCheckedChange = { AppSettings.authenticationEnabled = it },
 			modifier = Modifier.fillMaxWidth()
 		)
 		
 		TextSwitch(
 			text = "Re-Authenticate when app loses focus",
-			checked = authenticationExpiresOnPause,
-			onCheckedChange = { authenticationExpiresOnPause = it },
-			enabled = authenticationEnabled,
+			checked = AppSettings.authenticationExpiresOnPause,
+			onCheckedChange = { AppSettings.authenticationExpiresOnPause = it },
+			enabled = AppSettings.authenticationEnabled,
 			modifier = Modifier.fillMaxWidth()
 		)
 		
@@ -60,7 +57,7 @@ fun SettingsPage(navController: NavController) {
 			Button(
 				modifier = Modifier.weight(1f),
 				onClick = {
-					/* TODO */
+					AppSettings.save(context)
 					navController.popBackStack()
 				}
 			) {
@@ -70,9 +67,8 @@ fun SettingsPage(navController: NavController) {
 			OutlinedButton(
 				modifier = Modifier.weight(1f),
 				onClick = {
-					/* TODO */
-					navController.popBackStack()
-				}
+					AppSettings.reset(context)
+					navController.popBackStack() }
 			) {
 				Text("Cancel")
 			}

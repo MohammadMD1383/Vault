@@ -25,6 +25,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import ir.mmd.androidDev.vault.model.AppSettings
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 import java.util.concurrent.Executors
 
@@ -56,7 +57,13 @@ class MainActivity : FragmentActivity() {
 	}
 	
 	override fun onCreate(savedInstanceState: Bundle?) {
+		// splash screen
 		installSplashScreen()
+		
+		// load data
+		AppSettings.load(this)
+		
+		// paint
 		super.onCreate(savedInstanceState)
 		setContent {
 			VaultTheme {
