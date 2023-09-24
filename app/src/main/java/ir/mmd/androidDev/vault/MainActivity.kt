@@ -66,7 +66,7 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 	val navController = rememberNavController()
 	
 	Surface(Modifier.fillMaxSize()) {
-		NavHost(navController = navController, startDestination = "welcome") {
+		NavHost(navController = navController, startDestination = "home") {
 			composable(
 				route = "welcome",
 				enterTransition = { fadeIn() },
@@ -79,7 +79,7 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 					when (initialState.destination.route) {
 						"welcome" -> fadeIn()
 						"settings" -> slideInHorizontally { it }
-						"content" -> slideInVertically { -it }
+						"content/{mode}" -> slideInVertically { -it }
 						else -> null
 					}
 				},
@@ -87,7 +87,7 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 					when (targetState.destination.route) {
 						"welcome" -> fadeOut()
 						"settings" -> slideOutHorizontally { it }
-						"content" -> slideOutVertically { -it }
+						"content/{mode}" -> slideOutVertically { -it }
 						else -> null
 					}
 				}
@@ -112,7 +112,7 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 			) { SettingsPage() }
 			
 			composable(
-				route = "content",
+				route = "content/{mode}",
 				enterTransition = {
 					when (initialState.destination.route) {
 						"welcome" -> fadeIn()
@@ -131,13 +131,13 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 		}
 	}
 	
-	LifecycleResumeEffect(Unit) {
-		navController.navigate("welcome") {
-			launchSingleTop = true
-		}
-		
-		onPauseOrDispose { }
-	}
+	// LifecycleResumeEffect(Unit) {
+	// 	navController.navigate("welcome") {
+	// 		launchSingleTop = true
+	// 	}
+	//
+	// 	onPauseOrDispose { }
+	// }
 }
 
 @Preview
