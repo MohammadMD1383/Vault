@@ -33,8 +33,11 @@ import java.io.ObjectOutputStream
 import java.util.concurrent.Executors
 
 class MainActivity : FragmentActivity() {
-	private val items = mutableStateMapOf<String, String>()
+	companion object {
+		private const val ITEMS_ID = "ir.mmd.androidDev.vault.MainActivity.items"
+	}
 	
+	private val items = mutableStateMapOf<String, String>()
 	private val executor = Executors.newSingleThreadExecutor()
 	private val promptInfo by lazy {
 		BiometricPrompt.PromptInfo
@@ -74,7 +77,7 @@ class MainActivity : FragmentActivity() {
 	
 	fun load() {
 		try {
-			(ObjectInputStream(openFileInput("${MainActivity::class.qualifiedName}.items")).readObject() as Map<String, String>)
+			(ObjectInputStream(openFileInput(ITEMS_ID)).readObject() as Map<String, String>)
 				.forEach { (key, content) ->
 					items[key] = content
 				}
@@ -83,7 +86,7 @@ class MainActivity : FragmentActivity() {
 	}
 	
 	fun save() {
-		ObjectOutputStream(openFileOutput("${MainActivity::class.qualifiedName}.items", MODE_PRIVATE))
+		ObjectOutputStream(openFileOutput(ITEMS_ID, MODE_PRIVATE))
 			.writeObject(mutableMapOf<String, String>().apply {
 				items.forEach { (key, content) ->
 					set(key, content)

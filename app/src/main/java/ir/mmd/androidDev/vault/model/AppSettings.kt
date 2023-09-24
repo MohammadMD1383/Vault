@@ -10,6 +10,8 @@ import java.io.ObjectOutputStream
 import java.io.Serializable
 
 object AppSettings {
+	private const val ID = "ir.mmd.androidDev.vault.model.AppSettings"
+	
 	var authenticationEnabled by mutableStateOf(false)
 	var authenticationExpiresOnPause by mutableStateOf(false)
 	
@@ -24,7 +26,7 @@ object AppSettings {
 	
 	fun load(context: Context) {
 		try {
-			(ObjectInputStream(context.openFileInput(AppSettings::class.qualifiedName!!)).readObject() as Model).let {
+			(ObjectInputStream(context.openFileInput(ID)).readObject() as Model).let {
 				authenticationEnabled = it.authenticationEnabled
 				authenticationExpiresOnPause = it.authenticationExpiresOnPause
 			}
@@ -33,7 +35,7 @@ object AppSettings {
 	}
 	
 	fun save(context: Context) {
-		ObjectOutputStream(context.openFileOutput(AppSettings::class.qualifiedName!!, Context.MODE_PRIVATE)).writeObject(
+		ObjectOutputStream(context.openFileOutput(ID, Context.MODE_PRIVATE)).writeObject(
 			Model(
 				authenticationEnabled,
 				authenticationExpiresOnPause
