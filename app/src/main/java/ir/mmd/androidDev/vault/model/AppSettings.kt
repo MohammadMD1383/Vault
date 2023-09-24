@@ -10,10 +10,8 @@ import java.io.ObjectOutputStream
 import java.io.Serializable
 
 object AppSettings {
-	var authenticationEnabled by mutableStateOf(true)
-	var authenticationExpiresOnPause by mutableStateOf(true)
-	
-	private var lastState: Model? = null
+	var authenticationEnabled by mutableStateOf(false)
+	var authenticationExpiresOnPause by mutableStateOf(false)
 	
 	private class Model(
 		@JvmField val authenticationEnabled: Boolean,
@@ -27,7 +25,6 @@ object AppSettings {
 	fun load(context: Context) {
 		try {
 			(ObjectInputStream(context.openFileInput(AppSettings::class.qualifiedName!!)).readObject() as Model).let {
-				lastState = it
 				authenticationEnabled = it.authenticationEnabled
 				authenticationExpiresOnPause = it.authenticationExpiresOnPause
 			}
@@ -42,14 +39,5 @@ object AppSettings {
 				authenticationExpiresOnPause
 			)
 		)
-	}
-	
-	fun reset(context: Context) {
-		if (lastState == null) {
-			load(context)
-		} else {
-			authenticationEnabled = lastState!!.authenticationEnabled
-			authenticationExpiresOnPause = lastState!!.authenticationExpiresOnPause
-		}
 	}
 }

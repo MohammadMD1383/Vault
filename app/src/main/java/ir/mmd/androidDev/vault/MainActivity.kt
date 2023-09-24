@@ -30,7 +30,6 @@ import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 import java.io.FileNotFoundException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
-import java.io.Serializable
 import java.util.concurrent.Executors
 
 class MainActivity : FragmentActivity() {
@@ -98,7 +97,7 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 	val navController = rememberNavController()
 	
 	Surface(Modifier.fillMaxSize()) {
-		NavHost(navController = navController, startDestination = "home") {
+		NavHost(navController = navController, startDestination = if (AppSettings.authenticationEnabled) "welcome" else "home") {
 			composable(
 				route = "welcome",
 				enterTransition = { fadeIn() },
@@ -163,13 +162,15 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 		}
 	}
 	
-	// LifecycleResumeEffect(Unit) {
-	// 	navController.navigate("welcome") {
-	// 		launchSingleTop = true
-	// 	}
-	//
-	// 	onPauseOrDispose { }
-	// }
+	if (AppSettings.authenticationEnabled && AppSettings.authenticationExpiresOnPause) {
+		LifecycleResumeEffect(Unit) {
+			navController.navigate("welcome") {
+				launchSingleTop = true
+			}
+			
+			onPauseOrDispose { }
+		}
+	}
 }
 
 @Preview
