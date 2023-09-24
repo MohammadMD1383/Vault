@@ -4,15 +4,12 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterExitState
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -27,7 +24,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
@@ -51,8 +47,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -80,13 +74,13 @@ import ir.mmd.androidDev.vault.ui.component.SearchField
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 import ir.mmd.androidDev.vault.util.add
 import ir.mmd.androidDev.vault.util.onNavigationResult
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
 @Composable
 fun HomePage(navController: NavController, items: SnapshotStateMap<String, String>) {
 	var searchFieldExpanded by remember { mutableStateOf(false) }
 	val context = LocalContext.current
+	val mainActivity = context as MainActivity
 	val clipboardManager = LocalClipboardManager.current
 	val hapticFeedback = LocalHapticFeedback.current
 	val searchTerm = remember { mutableStateOf("") }
@@ -234,6 +228,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 											onClick = {
 												menuIsExpanded = false
 												items.remove(key)
+												mainActivity.save()
 											}
 										)
 									}
@@ -248,10 +243,12 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 	
 	navController.onNavigationResult<Pair<String, String>>("new") { (key, content) ->
 		items[key] = content
+		mainActivity.save()
 	}
 	
-	navController.onNavigationResult<Pair<String, String>>("edit") { (key, value) ->
-		items[key] = value
+	navController.onNavigationResult<Pair<String, String>>("edit") { (key, content) ->
+		items[key] = content
+		mainActivity.save()
 	}
 }
 

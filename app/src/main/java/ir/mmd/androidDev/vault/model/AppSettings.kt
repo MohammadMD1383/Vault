@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import java.io.FileNotFoundException
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.Serializable
@@ -24,10 +25,13 @@ object AppSettings {
 	}
 	
 	fun load(context: Context) {
-		(ObjectInputStream(context.openFileInput(AppSettings::class.qualifiedName!!)).readObject() as Model).let {
-			lastState = it
-			authenticationEnabled = it.authenticationEnabled
-			authenticationExpiresOnPause = it.authenticationExpiresOnPause
+		try {
+			(ObjectInputStream(context.openFileInput(AppSettings::class.qualifiedName!!)).readObject() as Model).let {
+				lastState = it
+				authenticationEnabled = it.authenticationEnabled
+				authenticationExpiresOnPause = it.authenticationExpiresOnPause
+			}
+		} catch (ignored: FileNotFoundException) {
 		}
 	}
 	

@@ -27,22 +27,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import ir.mmd.androidDev.vault.model.AppSettings
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
+import java.io.FileNotFoundException
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.io.Serializable
 import java.util.concurrent.Executors
 
 class MainActivity : FragmentActivity() {
-	private val items = mutableStateMapOf(
-		"credential" to "SECRET",
-		"bank number" to "515645687",
-		"bank cvv2" to "566",
-		"bank password" to "PAsko*99d",
-		"bank pin" to "1114",
-		"my credential" to "cisaji jacsj iajco siajs",
-		"credit card" to "6038 6636 3366 3325",
-		"credit 2" to "515445464",
-		"credit another" to "5545454",
-		"another credit" to "najhsdhaisdhiahsd",
-		"new credit" to "jasidjasjdia"
-	)
+	private val items = mutableStateMapOf<String, String>()
 	
 	private val executor = Executors.newSingleThreadExecutor()
 	private val promptInfo by lazy {
@@ -62,6 +54,7 @@ class MainActivity : FragmentActivity() {
 		
 		// load data
 		AppSettings.load(this)
+		this.load()
 		
 		// paint
 		super.onCreate(savedInstanceState)
@@ -78,6 +71,25 @@ class MainActivity : FragmentActivity() {
 				runOnUiThread(onSuccess)
 			}
 		}).authenticate(promptInfo)
+	}
+	
+	fun load() {
+		try {
+			(ObjectInputStream(openFileInput("${MainActivity::class.qualifiedName}.items")).readObject() as Map<String, String>)
+				.forEach { (key, content) ->
+					items[key] = content
+				}
+		} catch (ignored: FileNotFoundException) {
+		}
+	}
+	
+	fun save() {
+		ObjectOutputStream(openFileOutput("${MainActivity::class.qualifiedName}.items", MODE_PRIVATE))
+			.writeObject(mutableMapOf<String, String>().apply {
+				items.forEach { (key, content) ->
+					set(key, content)
+				}
+			})
 	}
 }
 
