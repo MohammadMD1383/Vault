@@ -8,9 +8,7 @@ import androidx.biometric.BiometricPrompt
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -19,11 +17,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import ir.mmd.androidDev.vault.model.AppSettings
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
@@ -113,7 +113,6 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 					when (initialState.destination.route) {
 						"welcome" -> fadeIn()
 						"settings" -> slideInHorizontally { it }
-						"content/{mode}" -> slideInVertically { -it }
 						else -> null
 					}
 				},
@@ -121,7 +120,6 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 					when (targetState.destination.route) {
 						"welcome" -> fadeOut()
 						"settings" -> slideOutHorizontally { it }
-						"content/{mode}" -> slideOutVertically { -it }
 						else -> null
 					}
 				}
@@ -145,22 +143,13 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 				}
 			) { SettingsPage(navController) }
 			
-			composable(
+			dialog(
 				route = "content/{mode}",
-				enterTransition = {
-					when (initialState.destination.route) {
-						"welcome" -> fadeIn()
-						"home" -> slideInVertically { it }
-						else -> null
-					}
-				},
-				exitTransition = {
-					when (targetState.destination.route) {
-						"welcome" -> fadeOut()
-						"home" -> slideOutVertically { it }
-						else -> null
-					}
-				}
+				dialogProperties = DialogProperties(
+					dismissOnBackPress = false,
+					dismissOnClickOutside = false,
+					usePlatformDefaultWidth = false,
+				)
 			) { ContentPage(navController) }
 		}
 	}
