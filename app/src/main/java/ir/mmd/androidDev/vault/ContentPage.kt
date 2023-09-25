@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ErrorOutline
@@ -60,7 +63,11 @@ fun ContentPage(navController: NavController) {
 	
 	Box(
 		contentAlignment = Alignment.BottomCenter,
-		modifier = Modifier.fillMaxSize()
+		modifier = Modifier
+			.fillMaxSize()
+			.statusBarsPadding()
+			.navigationBarsPadding()
+			.imePadding()
 	) {
 		AnimatedVisibility(
 			visible = visible,
@@ -74,7 +81,9 @@ fun ContentPage(navController: NavController) {
 			Surface(Modifier.clip(RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp))) {
 				Column(
 					horizontalAlignment = Alignment.CenterHorizontally,
-					modifier = Modifier.padding(16.dp)
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(16.dp)
 				) {
 					Text(
 						text = if (isEditMode) "Edit Item" else "New Item",
@@ -119,9 +128,9 @@ fun ContentPage(navController: NavController) {
 						} else null,
 						isError = contentHasProblem,
 						singleLine = false,
-						minLines = 7,
-						maxLines = 7,
-						modifier = Modifier.fillMaxWidth()
+						modifier = Modifier
+							.fillMaxWidth()
+							.weight(1f, fill = false)
 					)
 					
 					Row(

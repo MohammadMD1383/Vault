@@ -2,9 +2,11 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.Vault" parent="android:Theme.Material.Light.NoActionBar">
-        <!--        <item name="android:windowSplashScreenBackground" tools:ignore="NewApi">@color/white</item>-->
-        <!--        <item name="android:windowSplashScreenAnimationDuration" tools:ignore="NewApi">1000</item>-->
+        <!-- splash screen -->
         <item name="android:windowSplashScreenAnimatedIcon" tools:ignore="NewApi">@drawable/ic_launcher_foreground</item>
         <item name="android:windowSplashScreenBehavior" tools:ignore="NewApi">icon_preferred</item>
+
+        <!-- keyboard -->
+        <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 </resources>

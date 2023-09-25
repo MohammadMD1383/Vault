@@ -148,7 +148,8 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 				dialogProperties = DialogProperties(
 					dismissOnBackPress = false,
 					dismissOnClickOutside = false,
-					usePlatformDefaultWidth = false,
+					decorFitsSystemWindows = false,
+					usePlatformDefaultWidth = false
 				)
 			) { ContentPage(navController) }
 		}
