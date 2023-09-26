@@ -2,6 +2,9 @@ package ir.mmd.androidDev.vault.ui.component
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -48,7 +51,11 @@ fun SearchField(
 			focusedBorderColor = Color.Transparent
 		),
 		leadingIcon = {
-			AnimatedContent(targetState = value.isEmpty(), label = "Back & Clear") {
+			AnimatedContent(
+				targetState = value.isEmpty(),
+				label = "Back & Clear",
+				transitionSpec = { scaleIn() togetherWith scaleOut() }
+			) {
 				if (it) {
 					IconButton(onClick = onDismissRequest) {
 						Icon(Icons.Rounded.ArrowBack, "Back")
