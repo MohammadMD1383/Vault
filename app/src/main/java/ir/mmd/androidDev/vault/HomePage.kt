@@ -83,7 +83,8 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 	val mainActivity = context as MainActivity
 	val clipboardManager = LocalClipboardManager.current
 	val hapticFeedback = LocalHapticFeedback.current
-	val searchTerm = remember { mutableStateOf("") }
+	var searchTerm by remember { mutableStateOf("") }
+	var filterApplied by remember { mutableStateOf(false) }
 	val listState = rememberLazyListState()
 	val fabExpanded by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
 	
@@ -108,9 +109,16 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 								slideOutVertically { height -> -height } + fadeOut()
 						}
 					}
-				) {
-					if (it) {
-						SearchField(searchTerm) { searchFieldExpanded = false }
+				) { targetState ->
+					if (targetState) {
+						SearchField(
+							value = searchTerm,
+							onDismissRequest = { searchFieldExpanded = false },
+							onValueChange = {
+								searchTerm = it
+								filterApplied = it.isNotBlank()
+							}
+						)
 					} else {
 						CenterAlignedTopAppBar(
 							title = { Text(stringResource(R.string.app_name)) },
@@ -170,7 +178,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 				state = listState,
 			) {
 				items(items.entries.toList()) { (key, content) ->
-					val matchesFilter = searchTerm.value.isEmpty() || searchTerm.value in key
+					val matchesFilter = !filterApplied || searchTerm.split(' ').all { it in key }
 					var menuIsExpanded by remember { mutableStateOf(false) }
 					
 					AnimatedVisibility(

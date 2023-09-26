@@ -15,9 +15,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -28,31 +29,32 @@ import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 
 @Composable
 fun SearchField(
-	searchTerm: MutableState<String>,
+	value: String,
+	onValueChange: (String) -> Unit,
 	onDismissRequest: () -> Unit
 ) {
 	val focusRequester = remember { FocusRequester() }
 	
-	BackHandler(searchTerm.value.isNotEmpty()) {
-		searchTerm.value = ""
+	BackHandler(value.isNotEmpty()) {
+		onValueChange("")
 	}
 	
 	OutlinedTextField(
-		value = searchTerm.value,
-		onValueChange = { searchTerm.value = it },
+		value = value,
+		onValueChange = onValueChange,
 		placeholder = { Text("Search ...") },
 		colors = OutlinedTextFieldDefaults.colors(
 			unfocusedBorderColor = Color.Transparent,
 			focusedBorderColor = Color.Transparent
 		),
 		leadingIcon = {
-			AnimatedContent(targetState = searchTerm.value.isEmpty(), label = "Back & Clear") {
+			AnimatedContent(targetState = value.isEmpty(), label = "Back & Clear") {
 				if (it) {
 					IconButton(onClick = onDismissRequest) {
 						Icon(Icons.Rounded.ArrowBack, "Back")
 					}
 				} else {
-					IconButton(onClick = { searchTerm.value = "" }) {
+					IconButton(onClick = { onValueChange("") }) {
 						Icon(Icons.Rounded.Clear, "Clear")
 					}
 				}
@@ -72,10 +74,10 @@ fun SearchField(
 @Preview
 @Composable
 private fun LightPreview() {
-	val searchTerm = remember { mutableStateOf("") }
+	var searchTerm by remember { mutableStateOf("") }
 	VaultTheme(darkTheme = false) {
 		Surface {
-			SearchField(searchTerm) {}
+			SearchField(searchTerm, { searchTerm = it }, {})
 		}
 	}
 }
@@ -83,10 +85,10 @@ private fun LightPreview() {
 @Preview
 @Composable
 private fun DarkPreview() {
-	val searchTerm = remember { mutableStateOf("") }
+	var searchTerm by remember { mutableStateOf("") }
 	VaultTheme(darkTheme = true) {
 		Surface {
-			SearchField(searchTerm) {}
+			SearchField(searchTerm, { searchTerm = it }, {})
 		}
 	}
 }
