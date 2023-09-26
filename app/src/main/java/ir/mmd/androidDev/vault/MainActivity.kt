@@ -16,7 +16,9 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
@@ -43,8 +45,8 @@ class MainActivity : FragmentActivity() {
 		BiometricPrompt.PromptInfo
 			.Builder()
 			.apply {
-				setTitle("Open Vault")
-				setSubtitle("Prove this is you")
+				setTitle(getString(R.string.auth_title))
+				setSubtitle(getString(R.string.auth_sub_title))
 				setAllowedAuthenticators(BIOMETRIC_STRONG or DEVICE_CREDENTIAL)
 			}
 			.build()
@@ -98,6 +100,7 @@ class MainActivity : FragmentActivity() {
 @Composable
 private fun MainComponent(items: SnapshotStateMap<String, String>) {
 	val navController = rememberNavController()
+	val rtl = LocalLayoutDirection.current == LayoutDirection.Rtl
 	
 	Surface(Modifier.fillMaxSize()) {
 		NavHost(navController = navController, startDestination = if (AppSettings.authenticationEnabled) "welcome" else "home") {
@@ -112,14 +115,14 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 				enterTransition = {
 					when (initialState.destination.route) {
 						"welcome" -> fadeIn()
-						"settings" -> slideInHorizontally { it }
+						"settings" -> slideInHorizontally { if (rtl) -it else it }
 						else -> null
 					}
 				},
 				exitTransition = {
 					when (targetState.destination.route) {
 						"welcome" -> fadeOut()
-						"settings" -> slideOutHorizontally { it }
+						"settings" -> slideOutHorizontally { if (rtl) -it else it }
 						else -> null
 					}
 				}
@@ -130,14 +133,14 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 				enterTransition = {
 					when (initialState.destination.route) {
 						"welcome" -> fadeIn()
-						"home" -> slideInHorizontally { -it }
+						"home" -> slideInHorizontally { if (rtl) it else -it }
 						else -> null
 					}
 				},
 				exitTransition = {
 					when (targetState.destination.route) {
 						"welcome" -> fadeOut()
-						"home" -> slideOutHorizontally { -it }
+						"home" -> slideOutHorizontally { if (rtl) it else -it }
 						else -> null
 					}
 				}

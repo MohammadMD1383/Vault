@@ -27,8 +27,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ir.mmd.androidDev.vault.R
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 
 @Composable
@@ -68,13 +70,13 @@ fun TextSwitch(
 				if (checked) {
 					Icon(
 						imageVector = Icons.Rounded.Check,
-						contentDescription = "Enabled",
+						contentDescription = stringResource(R.string.text_enabled),
 						modifier = Modifier.size(SwitchDefaults.IconSize)
 					)
 				} else {
 					Icon(
 						imageVector = Icons.Rounded.Close,
-						contentDescription = "Disabled",
+						contentDescription = stringResource(R.string.text_disabled),
 						modifier = Modifier.size(SwitchDefaults.IconSize)
 					)
 				}

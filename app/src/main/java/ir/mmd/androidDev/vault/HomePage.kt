@@ -124,12 +124,12 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 							title = { Text(stringResource(R.string.app_name)) },
 							navigationIcon = {
 								IconButton(onClick = { navController.navigate("settings") { launchSingleTop = true } }) {
-									Icon(Icons.Rounded.Settings, "Settings")
+									Icon(Icons.Rounded.Settings, stringResource(R.string.text_settings))
 								}
 							},
 							actions = {
 								IconButton(onClick = { searchFieldExpanded = true }) {
-									Icon(Icons.Rounded.Search, "Search")
+									Icon(Icons.Rounded.Search, stringResource(R.string.text_search))
 								}
 							}
 						)
@@ -139,8 +139,8 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 		},
 		floatingActionButton = {
 			ExtendedFloatingActionButton(
-				{ Text("Add") },
-				{ Icon(Icons.Rounded.Add, "Add") },
+				{ Text(stringResource(R.string.text_add)) },
+				{ Icon(Icons.Rounded.Add, stringResource(R.string.text_add)) },
 				expanded = fabExpanded, // todo: https://stackoverflow.com/a/70460377/13436464
 				onClick = { navController.navigate("content/new") { launchSingleTop = true } }
 			)
@@ -156,7 +156,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 					verticalArrangement = Arrangement.spacedBy(16.dp)
 				) {
 					Text(
-						text = "Start adding new items by clicking on",
+						text = stringResource(R.string.text_empty_home),
 						textAlign = TextAlign.Center
 					)
 					
@@ -166,7 +166,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 					) {
 						IconText(
 							icon = Icons.Rounded.Add,
-							text = "Add",
+							text = stringResource(R.string.text_add),
 							modifier = Modifier
 								.border(1.dp, MaterialTheme.colorScheme.onBackground, FloatingActionButtonDefaults.extendedFabShape)
 								.padding(16.dp, 16.dp, 20.dp, 16.dp)
@@ -197,7 +197,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 										clipboardManager.setText(AnnotatedString(content))
 										hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
 										Toast
-											.makeText(context, "Copied!", Toast.LENGTH_SHORT)
+											.makeText(context, context.resources.getString(R.string.text_copied), Toast.LENGTH_SHORT)
 											.show()
 									}
 								)
@@ -213,7 +213,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 								
 								Box(contentAlignment = Alignment.Center) {
 									IconButton(onClick = { menuIsExpanded = true }) {
-										Icon(Icons.Rounded.MoreVert, "More")
+										Icon(Icons.Rounded.MoreVert, stringResource(R.string.text_more))
 									}
 									
 									DropdownMenu(
@@ -221,7 +221,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 										onDismissRequest = { menuIsExpanded = false }
 									) {
 										DropdownMenuItem(
-											text = { IconText(Icons.Rounded.Edit, "Edit") },
+											text = { IconText(Icons.Rounded.Edit, stringResource(R.string.text_edit)) },
 											onClick = {
 												menuIsExpanded = false
 												navController.navigate("content/edit") { launchSingleTop = true }
@@ -232,7 +232,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 										)
 										
 										DropdownMenuItem(
-											text = { IconText(Icons.Rounded.DeleteOutline, "Delete") },
+											text = { IconText(Icons.Rounded.DeleteOutline, stringResource(R.string.text_delete)) },
 											onClick = {
 												menuIsExpanded = false
 												items.remove(key)

@@ -26,9 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ir.mmd.androidDev.vault.R
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
+import ir.mmd.androidDev.vault.util.autoMirror
 
 @Composable
 fun SearchField(
@@ -45,7 +48,7 @@ fun SearchField(
 	OutlinedTextField(
 		value = value,
 		onValueChange = onValueChange,
-		placeholder = { Text("Search ...") },
+		placeholder = { Text(stringResource(R.string.search_field_placeholder)) },
 		colors = OutlinedTextFieldDefaults.colors(
 			unfocusedBorderColor = Color.Transparent,
 			focusedBorderColor = Color.Transparent
@@ -58,11 +61,11 @@ fun SearchField(
 			) {
 				if (it) {
 					IconButton(onClick = onDismissRequest) {
-						Icon(Icons.Rounded.ArrowBack, "Back")
+						Icon(Icons.Rounded.ArrowBack, stringResource(R.string.text_back), Modifier.autoMirror())
 					}
 				} else {
 					IconButton(onClick = { onValueChange("") }) {
-						Icon(Icons.Rounded.Clear, "Clear")
+						Icon(Icons.Rounded.Clear, stringResource(R.string.text_clear))
 					}
 				}
 			}

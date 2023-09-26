@@ -35,6 +35,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -86,7 +87,7 @@ fun ContentPage(navController: NavController) {
 						.padding(16.dp)
 				) {
 					Text(
-						text = if (isEditMode) "Edit Item" else "New Item",
+						text = if (isEditMode) stringResource(R.string.text_edit_item) else stringResource(R.string.text_new_item),
 						style = Typography.headlineMedium,
 						modifier = Modifier
 							.fillMaxWidth()
@@ -99,14 +100,14 @@ fun ContentPage(navController: NavController) {
 							key = it
 							keyHasProblem = it.isBlank()
 						},
-						leadingIcon = { Icon(Icons.Rounded.VpnKey, "Key") },
+						leadingIcon = { Icon(Icons.Rounded.VpnKey, stringResource(R.string.text_key)) },
 						trailingIcon = if (keyHasProblem) {
-							{ Icon(Icons.Rounded.ErrorOutline, "Error", tint = MaterialTheme.colorScheme.error) }
+							{ Icon(Icons.Rounded.ErrorOutline, stringResource(R.string.text_error), tint = MaterialTheme.colorScheme.error) }
 						} else null,
 						supportingText = if (keyHasProblem) {
-							{ Text("Key cannot be empty") }
+							{ Text(stringResource(R.string.error_key_cannot_be_empty)) }
 						} else null,
-						label = { Text("Key") },
+						label = { Text(stringResource(R.string.text_key)) },
 						readOnly = isEditMode,
 						isError = keyHasProblem,
 						singleLine = true,
@@ -119,12 +120,12 @@ fun ContentPage(navController: NavController) {
 							content = it
 							contentHasProblem = it.isEmpty()
 						},
-						label = { Text("Content") },
+						label = { Text(stringResource(R.string.text_content)) },
 						trailingIcon = if (contentHasProblem) {
-							{ Icon(Icons.Rounded.ErrorOutline, "Error", tint = MaterialTheme.colorScheme.error) }
+							{ Icon(Icons.Rounded.ErrorOutline, stringResource(R.string.text_error), tint = MaterialTheme.colorScheme.error) }
 						} else null,
 						supportingText = if (contentHasProblem) {
-							{ Text("Content cannot be empty") }
+							{ Text(stringResource(R.string.error_content_cannot_be_empty)) }
 						} else null,
 						isError = contentHasProblem,
 						singleLine = false,
@@ -153,14 +154,14 @@ fun ContentPage(navController: NavController) {
 								visible = false
 							}
 						) {
-							Text("Save")
+							Text(stringResource(R.string.text_save))
 						}
 						
 						OutlinedButton(
 							modifier = Modifier.weight(1f),
 							onClick = { visible = false }
 						) {
-							Text("Cancel")
+							Text(stringResource(R.string.text_cancel))
 						}
 					}
 				}

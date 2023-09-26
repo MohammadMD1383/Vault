@@ -1,4 +1,32 @@
 <resources>
     <string name="app_name">Vault</string>
-    <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="search_field_placeholder">Search ...</string>
+    <string name="text_back">Back</string>
+    <string name="text_clear">Clear</string>
+    <string name="text_enabled">Enabled</string>
+    <string name="text_disabled">Disabled</string>
+    <string name="auth_title">Open Vault</string>
+    <string name="auth_sub_title">Prove this is you</string>
+    <string name="text_settings">Settings</string>
+    <string name="settings_enable_auth">Enable authentication</string>
+    <string name="settings_enable_re_auth">Re-Authenticate when app loses focus</string>
+    <string name="text_save">Save</string>
+    <string name="text_cancel">Cancel</string>
+    <string name="text_search">Search</string>
+    <string name="text_add">Add</string>
+    <string name="text_empty_home">Start adding new items by clicking on</string>
+    <string name="text_copied">Copied!</string>
+    <string name="text_more">More</string>
+    <string name="text_edit">Edit</string>
+    <string name="text_delete">Delete</string>
+    <string name="text_edit_item">Edit Item</string>
+    <string name="text_new_item">New Item</string>
+    <string name="text_key">Key</string>
+    <string name="text_error">Error</string>
+    <string name="error_key_cannot_be_empty">Key cannot be empty</string>
+    <string name="text_content">Content</string>
+    <string name="error_content_cannot_be_empty">Content cannot be empty</string>
+    <string name="welcome_to_vault">Welcome to Vault</string>
+    <string name="text_fingerprint">Fingerprint</string>
+    <string name="text_touch_to_auth">Touch the above icon to authenticate</string>
 </resources>

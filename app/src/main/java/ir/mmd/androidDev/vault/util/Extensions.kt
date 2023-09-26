@@ -1,16 +1,21 @@
 package ir.mmd.androidDev.vault.util
 
 import android.annotation.SuppressLint
+import android.util.LayoutDirection
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.text.layoutDirection
 import androidx.navigation.NavController
+import java.util.Locale
 
 @Composable
 fun PaddingValues.add(
@@ -54,3 +59,8 @@ fun <T> NavController.returnWithNavigationResult(key: String, value: T) {
 fun <T> NavController.rememberNavigationData(key: String): T? {
 	return remember { currentBackStackEntry?.savedStateHandle?.get(key) }
 }
+
+fun Modifier.autoMirror() = if (Locale.getDefault().layoutDirection == LayoutDirection.RTL) {
+	scale(scaleX = -1f, scaleY = 1f)
+} else this
+

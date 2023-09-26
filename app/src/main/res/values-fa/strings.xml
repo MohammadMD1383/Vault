@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">والت</string>
+    <string name="search_field_placeholder">جستجو ...</string>
+    <string name="text_back">بازگشت</string>
+    <string name="text_clear">پاک کردن</string>
+    <string name="text_enabled">فعال</string>
+    <string name="text_disabled">غیر فعال</string>
+    <string name="auth_sub_title">ثابت کنید که این شما هستید</string>
+    <string name="text_settings">تنظیمات</string>
+    <string name="settings_enable_auth">فعال کردن احراز هویت</string>
+    <string name="settings_enable_re_auth">احراز هویت مجدد هنگامی که برنامه به پس زمینه منتقل شود</string>
+    <string name="text_save">ذخیره</string>
+    <string name="text_cancel">لغو</string>
+    <string name="text_search">جستجو</string>
+    <string name="text_add">افزودن</string>
+    <string name="text_empty_home">یک مورد جدید را با کلیلک بر روی این نماد در پایین صفحه اضافه کنید</string>
+    <string name="text_copied">کپی شد!</string>
+    <string name="text_more">بیشتر</string>
+    <string name="text_edit">ویرایش</string>
+    <string name="text_delete">حذف</string>
+    <string name="text_edit_item">ویرایش محتوا</string>
+    <string name="text_new_item">محتوای جدید</string>
+    <string name="text_key">کلید</string>
+    <string name="text_error">خطا</string>
+    <string name="error_key_cannot_be_empty">کلید نمی‌تواند خالی باشد</string>
+    <string name="text_content">محتوا</string>
+    <string name="error_content_cannot_be_empty">محتوا نمی‌تواند خالی باشد</string>
+    <string name="welcome_to_vault">به والت خوش آمدید</string>
+    <string name="text_fingerprint">اثر انگشت</string>
+    <string name="text_touch_to_auth">برای احراز هویت، نماد بالا را لمس کنید</string>
+    <string name="auth_title">باز کردن والت</string>
+</resources>
