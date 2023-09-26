@@ -29,4 +29,5 @@
     <string name="welcome_to_vault">Welcome to Vault</string>
     <string name="text_fingerprint">Fingerprint</string>
     <string name="text_touch_to_auth">Touch the above icon to authenticate</string>
+    <string name="text_copy">Copy</string>
 </resources>

@@ -70,6 +70,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ir.mmd.androidDev.vault.ui.component.IconText
+import ir.mmd.androidDev.vault.ui.component.PreviewDialog
 import ir.mmd.androidDev.vault.ui.component.SearchField
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 import ir.mmd.androidDev.vault.util.add
@@ -87,6 +88,25 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 	var filterApplied by remember { mutableStateOf(false) }
 	val listState = rememberLazyListState()
 	val fabExpanded by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
+	var previewKey by remember { mutableStateOf(null as String?) }
+	var previewContent by remember { mutableStateOf(null as String?) }
+	
+	val copyContent = remember {
+		{ content: String ->
+			clipboardManager.setText(AnnotatedString(content))
+			hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
+			Toast
+				.makeText(context, context.resources.getString(R.string.text_copied), Toast.LENGTH_SHORT)
+				.show()
+		}
+	}
+	
+	val closePreview = remember {
+		{
+			previewKey = null
+			previewContent = null
+		}
+	}
 	
 	BackHandler(searchFieldExpanded) {
 		searchFieldExpanded = false
@@ -192,13 +212,10 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 								.padding(top = 8.dp)
 								.clip(CardDefaults.shape)
 								.combinedClickable(
-									onClick = {},
-									onLongClick = {
-										clipboardManager.setText(AnnotatedString(content))
-										hapticFeedback.performHapticFeedback(HapticFeedbackType.LongPress)
-										Toast
-											.makeText(context, context.resources.getString(R.string.text_copied), Toast.LENGTH_SHORT)
-											.show()
+									onLongClick = { copyContent(content) },
+									onClick = {
+										previewKey = key
+										previewContent = content
 									}
 								)
 						) {
@@ -247,6 +264,30 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 				}
 			}
 		}
+	}
+	
+	if (previewKey != null) {
+		PreviewDialog(
+			key = previewKey!!,
+			content = previewContent!!,
+			onDismissRequest = { closePreview() },
+			onCopyRequest = {
+				copyContent(previewContent!!)
+				closePreview()
+			},
+			onEditRequest = {
+				navController.navigate("content/edit") { launchSingleTop = true }
+				navController.currentBackStackEntry
+					?.savedStateHandle
+					?.set("data", previewKey to previewContent)
+				closePreview()
+			},
+			onDeleteRequest = {
+				items.remove(previewKey)
+				closePreview()
+				mainActivity.save()
+			}
+		)
 	}
 	
 	navController.onNavigationResult<Pair<String, String>>("new") { (key, content) ->
