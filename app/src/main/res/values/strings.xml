@@ -31,4 +31,6 @@
     <string name="text_touch_to_auth">Touch the above icon to authenticate</string>
     <string name="text_copy">Copy</string>
     <string name="settings_close_preview_after_copy">Close preview after copy</string>
+    <string name="text_okay">Okay</string>
+    <string name="confirm_delete_item">Are you sure to delete this item?</string>
 </resources>

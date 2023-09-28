@@ -74,6 +74,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ir.mmd.androidDev.vault.model.AppSettings
+import ir.mmd.androidDev.vault.ui.component.ConfirmDialog
 import ir.mmd.androidDev.vault.ui.component.IconText
 import ir.mmd.androidDev.vault.ui.component.PreviewDialog
 import ir.mmd.androidDev.vault.ui.component.SearchField
@@ -96,6 +97,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 	var previewKey by remember { mutableStateOf(null as String?) }
 	var previewContent by remember { mutableStateOf(null as String?) }
 	var keyToRemove by remember { mutableStateOf(null as String?) }
+	var removeConfirmed by remember { mutableStateOf(false) }
 	var keyToAdd by remember { mutableStateOf(null as String?) }
 	
 	val copyContent = remember {
@@ -216,8 +218,10 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 						)
 					}
 					
-					if (keyToRemove == key) {
+					if (keyToRemove == key && removeConfirmed) {
 						visible = false
+						keyToRemove = null
+						removeConfirmed = false
 					}
 					
 					LaunchedEffect(Unit) {
@@ -319,6 +323,14 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 				keyToRemove = previewKey
 				closePreview()
 			}
+		)
+	}
+	
+	if (keyToRemove != null) {
+		ConfirmDialog(
+			text = stringResource(R.string.confirm_delete_item),
+			onConfirm = { removeConfirmed = true },
+			onDismissRequest = { keyToRemove = null }
 		)
 	}
 	
