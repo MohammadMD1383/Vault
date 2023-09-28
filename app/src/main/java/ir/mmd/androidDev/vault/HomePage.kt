@@ -8,6 +8,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -47,6 +49,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -91,6 +95,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 	val fabExpanded by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
 	var previewKey by remember { mutableStateOf(null as String?) }
 	var previewContent by remember { mutableStateOf(null as String?) }
+	var keyToRemove by remember { mutableStateOf(null as String?) }
 	
 	val copyContent = remember {
 		{ content: String ->
@@ -198,15 +203,33 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 				contentPadding = paddingValues.add(8.dp, 0.dp, 8.dp, (32 + 56).dp),
 				state = listState,
 			) {
-				items(items.entries.toList()) { (key, content) ->
+				items(items.entries.toList(), key = { it.key }) { (key, content) ->
 					val matchesFilter = !filterApplied || searchTerm.split(' ').all { it in key }
+					var visible by remember { mutableStateOf(false) }
 					var menuIsExpanded by remember { mutableStateOf(false) }
 					
+					if (keyToRemove == key) {
+						visible = false
+					}
+					
+					LaunchedEffect(Unit) {
+						visible = true
+					}
+					
 					AnimatedVisibility(
-						visible = matchesFilter,
-						enter = fadeIn() + expandVertically(),
-						exit = fadeOut() + shrinkVertically()
+						visible = matchesFilter && visible,
+						enter = fadeIn() + expandVertically() + scaleIn(),
+						exit = fadeOut() + shrinkVertically() + scaleOut()
 					) {
+						DisposableEffect(Unit) {
+							onDispose {
+								if (matchesFilter && !visible) {
+									items.remove(key)
+									mainActivity.save()
+								}
+							}
+						}
+						
 						Card(
 							modifier = Modifier
 								.fillMaxWidth()
@@ -253,8 +276,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 											text = { IconText(Icons.Rounded.DeleteOutline, stringResource(R.string.text_delete)) },
 											onClick = {
 												menuIsExpanded = false
-												items.remove(key)
-												mainActivity.save()
+												keyToRemove = key
 											}
 										)
 									}
@@ -286,9 +308,8 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 				closePreview()
 			},
 			onDeleteRequest = {
-				items.remove(previewKey)
+				keyToRemove = previewKey
 				closePreview()
-				mainActivity.save()
 			}
 		)
 	}
