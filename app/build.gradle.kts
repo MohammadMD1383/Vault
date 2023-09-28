@@ -11,8 +11,8 @@ android {
 		applicationId = "ir.mmd.androidDev.vault"
 		minSdk = 26
 		targetSdk = 34
-		versionCode = 6
-		versionName = "2.1.0"
+		versionCode = 7
+		versionName = "2.2.0"
 		
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 		vectorDrawables {

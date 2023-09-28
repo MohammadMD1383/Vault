@@ -28,6 +28,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.DeleteOutline
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.MoreVert
@@ -286,6 +287,14 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 										expanded = menuIsExpanded,
 										onDismissRequest = { menuIsExpanded = false }
 									) {
+										DropdownMenuItem(
+											text = { IconText(Icons.Rounded.ContentCopy, stringResource(R.string.text_copy)) },
+											onClick = {
+												menuIsExpanded = false
+												copyContent(content)
+											}
+										)
+										
 										DropdownMenuItem(
 											text = { IconText(Icons.Rounded.Edit, stringResource(R.string.text_edit)) },
 											onClick = {
