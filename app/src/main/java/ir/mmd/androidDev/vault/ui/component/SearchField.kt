@@ -49,6 +49,7 @@ fun SearchField(
 		value = value,
 		onValueChange = onValueChange,
 		placeholder = { Text(stringResource(R.string.search_field_placeholder)) },
+		singleLine = true,
 		colors = OutlinedTextFieldDefaults.colors(
 			unfocusedBorderColor = Color.Transparent,
 			focusedBorderColor = Color.Transparent
