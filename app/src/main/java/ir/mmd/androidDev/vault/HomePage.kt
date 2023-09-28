@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.DeleteOutline
@@ -51,7 +50,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -62,7 +60,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -92,13 +94,24 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 	val hapticFeedback = LocalHapticFeedback.current
 	var searchTerm by remember { mutableStateOf("") }
 	var filterApplied by remember { mutableStateOf(false) }
-	val listState = rememberLazyListState()
-	val fabExpanded by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
+	var fabExpanded by remember { mutableStateOf(true) }
 	var previewKey by remember { mutableStateOf(null as String?) }
 	var previewContent by remember { mutableStateOf(null as String?) }
 	var keyToRemove by remember { mutableStateOf(null as String?) }
 	var removeConfirmed by remember { mutableStateOf(false) }
 	var keyToAdd by remember { mutableStateOf(null as String?) }
+	val nestedScrollConnection = remember {
+		object : NestedScrollConnection {
+			override fun onPostScroll(consumed: Offset, available: Offset, source: NestedScrollSource): Offset {
+				if (consumed.y < -0 && fabExpanded) {
+					fabExpanded = false
+				} else if (consumed.y > 0 && !fabExpanded) {
+					fabExpanded = true
+				}
+				return super.onPostScroll(consumed, available, source)
+			}
+		}
+	}
 	
 	val copyContent = remember {
 		{ content: String ->
@@ -170,7 +183,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 			ExtendedFloatingActionButton(
 				{ Text(stringResource(R.string.text_add)) },
 				{ Icon(Icons.Rounded.Add, stringResource(R.string.text_add)) },
-				expanded = fabExpanded, // todo: https://stackoverflow.com/a/70460377/13436464
+				expanded = fabExpanded,
 				onClick = { navController.navigate("content/new") { launchSingleTop = true } }
 			)
 		}
@@ -204,7 +217,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 				}
 			} else LazyColumn(
 				contentPadding = paddingValues.add(8.dp, 0.dp, 8.dp, (32 + 56).dp),
-				state = listState,
+				modifier = Modifier.nestedScroll(nestedScrollConnection)
 			) {
 				items(items.entries.toList(), key = { it.key }) { (key, content) ->
 					val matchesFilter = !filterApplied || searchTerm.split(' ').all { it in key }
