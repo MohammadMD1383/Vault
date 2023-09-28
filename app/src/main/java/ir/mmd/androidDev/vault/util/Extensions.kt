@@ -34,13 +34,15 @@ fun PaddingValues.add(
 
 @SuppressLint("ComposableNaming")
 @Composable
-fun <T> NavController.onNavigationResult(vararg keys: String, block: (T) -> Unit) {
+fun <T> NavController.onNavigationResult(vararg keys: String, block: (key: String, T) -> Unit) {
 	val target = currentBackStackEntry!!.destination
 	
 	keys.forEach { key ->
 		currentBackStackEntryAsState().value?.let { entry ->
 			if (entry.destination == target) {
-				entry.savedStateHandle.remove<T>(key)?.let(block)
+				entry.savedStateHandle.remove<T>(key)?.let {
+					block(key, it)
+				}
 			}
 		}
 	}

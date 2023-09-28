@@ -96,6 +96,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 	var previewKey by remember { mutableStateOf(null as String?) }
 	var previewContent by remember { mutableStateOf(null as String?) }
 	var keyToRemove by remember { mutableStateOf(null as String?) }
+	var keyToAdd by remember { mutableStateOf(null as String?) }
 	
 	val copyContent = remember {
 		{ content: String ->
@@ -205,8 +206,15 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 			) {
 				items(items.entries.toList(), key = { it.key }) { (key, content) ->
 					val matchesFilter = !filterApplied || searchTerm.split(' ').all { it in key }
-					var visible by remember { mutableStateOf(false) }
 					var menuIsExpanded by remember { mutableStateOf(false) }
+					var visible by remember {
+						mutableStateOf(
+							if (keyToAdd == key) {
+								keyToAdd = null
+								false
+							} else true
+						)
+					}
 					
 					if (keyToRemove == key) {
 						visible = false
@@ -314,7 +322,11 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 		)
 	}
 	
-	navController.onNavigationResult<Pair<String, String>>("new", "edit") { (key, content) ->
+	navController.onNavigationResult<Pair<String, String>>("new", "edit") { mode, (key, content) ->
+		if (mode == "new") {
+			keyToAdd = key
+		}
+		
 		items[key] = content
 		mainActivity.save()
 	}
