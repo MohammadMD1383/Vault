@@ -293,12 +293,7 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 		)
 	}
 	
-	navController.onNavigationResult<Pair<String, String>>("new") { (key, content) ->
-		items[key] = content
-		mainActivity.save()
-	}
-	
-	navController.onNavigationResult<Pair<String, String>>("edit") { (key, content) ->
+	navController.onNavigationResult<Pair<String, String>>("new", "edit") { (key, content) ->
 		items[key] = content
 		mainActivity.save()
 	}

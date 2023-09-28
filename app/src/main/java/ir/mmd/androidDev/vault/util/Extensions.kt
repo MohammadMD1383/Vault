@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
@@ -15,6 +14,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.text.layoutDirection
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import java.util.Locale
 
 @Composable
@@ -34,19 +34,16 @@ fun PaddingValues.add(
 
 @SuppressLint("ComposableNaming")
 @Composable
-fun <T> NavController.onNavigationResult(key: String, block: (T) -> Unit) {
-	currentBackStackEntry
-		?.savedStateHandle
-		?.getLiveData<T>(key)
-		?.observeAsState()
-		?.value
-		?.let {
-			block(it)
-			
-			currentBackStackEntry
-				?.savedStateHandle
-				?.remove<T>(key)
+fun <T> NavController.onNavigationResult(vararg keys: String, block: (T) -> Unit) {
+	val target = currentBackStackEntry!!.destination
+	
+	keys.forEach { key ->
+		currentBackStackEntryAsState().value?.let { entry ->
+			if (entry.destination == target) {
+				entry.savedStateHandle.remove<T>(key)?.let(block)
+			}
 		}
+	}
 }
 
 @SuppressLint("ComposableNaming")

@@ -79,21 +79,27 @@ class MainActivity : FragmentActivity() {
 	
 	fun load() {
 		try {
-			(ObjectInputStream(openFileInput(ITEMS_ID)).readObject() as Map<String, String>)
-				.forEach { (key, content) ->
-					items[key] = content
+			openFileInput(ITEMS_ID).use { file ->
+				ObjectInputStream(file).use { stream ->
+					(stream.readObject() as Map<String, String>).forEach { (key, content) ->
+						items[key] = content
+					}
 				}
+			}
 		} catch (ignored: FileNotFoundException) {
 		}
 	}
 	
 	fun save() {
-		ObjectOutputStream(openFileOutput(ITEMS_ID, MODE_PRIVATE))
-			.writeObject(mutableMapOf<String, String>().apply {
-				items.forEach { (key, content) ->
-					set(key, content)
-				}
-			})
+		openFileOutput(ITEMS_ID, MODE_PRIVATE).use { file ->
+			ObjectOutputStream(file).use { stream ->
+				stream.writeObject(mutableMapOf<String, String>().apply {
+					items.toMap().forEach { (key, content) ->
+						set(key, content)
+					}
+				})
+			}
+		}
 	}
 }
 
