@@ -158,14 +158,14 @@ private fun MainComponent(items: SnapshotStateMap<String, String>) {
 		}
 	}
 	
-	if (AppSettings.authenticationEnabled && AppSettings.authenticationExpiresOnPause) {
-		LifecycleResumeEffect(Unit) {
+	LifecycleResumeEffect(Unit) {
+		if (AppSettings.authenticationEnabled && AppSettings.authenticationExpiresOnPause) {
 			navController.navigate("welcome") {
 				launchSingleTop = true
 			}
-			
-			onPauseOrDispose { }
 		}
+		
+		onPauseOrDispose { }
 	}
 }
 

@@ -69,6 +69,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import ir.mmd.androidDev.vault.model.AppSettings
 import ir.mmd.androidDev.vault.ui.component.IconText
 import ir.mmd.androidDev.vault.ui.component.PreviewDialog
 import ir.mmd.androidDev.vault.ui.component.SearchField
@@ -273,7 +274,9 @@ fun HomePage(navController: NavController, items: SnapshotStateMap<String, Strin
 			onDismissRequest = { closePreview() },
 			onCopyRequest = {
 				copyContent(previewContent!!)
-				closePreview()
+				if (AppSettings.closePreviewAfterCopy) {
+					closePreview()
+				}
 			},
 			onEditRequest = {
 				navController.navigate("content/edit") { launchSingleTop = true }

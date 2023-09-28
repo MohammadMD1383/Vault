@@ -32,6 +32,7 @@ fun SettingsPage(navController: NavController) {
 	val context = LocalContext.current
 	var authenticationEnabled by remember { mutableStateOf(AppSettings.authenticationEnabled) }
 	var authenticationExpiresOnPause by remember { mutableStateOf(AppSettings.authenticationExpiresOnPause) }
+	var closePreviewAfterCopy by remember { mutableStateOf(AppSettings.closePreviewAfterCopy) }
 	
 	Column(Modifier.fillMaxSize()) {
 		Text(
@@ -55,6 +56,13 @@ fun SettingsPage(navController: NavController) {
 			modifier = Modifier.fillMaxWidth()
 		)
 		
+		TextSwitch(
+			text = stringResource(R.string.settings_close_preview_after_copy),
+			checked = closePreviewAfterCopy,
+			onCheckedChange = { closePreviewAfterCopy = it },
+			modifier = Modifier.fillMaxWidth()
+		)
+		
 		Spacer(modifier = Modifier.weight(1f))
 		
 		Row(
@@ -66,6 +74,7 @@ fun SettingsPage(navController: NavController) {
 				onClick = {
 					AppSettings.authenticationEnabled = authenticationEnabled
 					AppSettings.authenticationExpiresOnPause = authenticationExpiresOnPause
+					AppSettings.closePreviewAfterCopy = closePreviewAfterCopy
 					AppSettings.save(context)
 					navController.popBackStack()
 				}

@@ -30,4 +30,6 @@
     <string name="text_fingerprint">اثر انگشت</string>
     <string name="text_touch_to_auth">برای احراز هویت، نماد بالا را لمس کنید</string>
     <string name="auth_title">باز کردن والت</string>
+    <string name="text_copy">کپی</string>
+    <string name="settings_close_preview_after_copy">بستن پیش‌نمایش پس از کپی کردن</string>
 </resources>

@@ -63,4 +63,3 @@ fun <T> NavController.rememberNavigationData(key: String): T? {
 fun Modifier.autoMirror() = if (Locale.getDefault().layoutDirection == LayoutDirection.RTL) {
 	scale(scaleX = -1f, scaleY = 1f)
 } else this
-
