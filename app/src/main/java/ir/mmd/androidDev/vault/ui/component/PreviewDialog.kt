@@ -49,21 +49,21 @@ fun PreviewDialog(
 			Row {
 				TextButton(
 					onClick = onCopyRequest,
-					modifier = Modifier.weight(1f, fill = false)
+					modifier = Modifier.weight(1f)
 				) {
 					IconText(Icons.Rounded.ContentCopy, stringResource(R.string.text_copy))
 				}
 				
 				TextButton(
 					onClick = onEditRequest,
-					modifier = Modifier.weight(1f, fill = false)
+					modifier = Modifier.weight(1f)
 				) {
 					IconText(Icons.Rounded.Edit, stringResource(R.string.text_edit))
 				}
 				
 				TextButton(
 					onClick = onDeleteRequest,
-					modifier = Modifier.weight(1f, fill = false)
+					modifier = Modifier.weight(1f)
 				) {
 					IconText(Icons.Rounded.DeleteOutline, stringResource(R.string.text_delete))
 				}
