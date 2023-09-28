@@ -33,17 +33,20 @@ class AppSettings private constructor() : Serializable {
 			}
 		
 		fun load(context: Context) {
-			instance = try {
+			try {
 				context.openFileInput(ID).use { file ->
 					ObjectInputStream(file).use { stream ->
-						stream.readObject() as AppSettings
+						instance = stream.readObject() as AppSettings
 					}
 				}
 			} catch (e: Exception) {
 				when (e) {
 					is FileNotFoundException,
 					is ClassNotFoundException,
-					is InvalidClassException -> AppSettings()
+					is InvalidClassException -> {
+						instance = AppSettings()
+						save(context)
+					}
 					
 					else -> throw e
 				}
