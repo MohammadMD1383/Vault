@@ -8,6 +8,10 @@ import java.io.ObjectOutputStream
 import java.io.Serializable
 
 class AppSettings private constructor() : Serializable {
+	enum class Theme {
+		SystemDefault, Light, Dark
+	}
+	
 	companion object {
 		private const val ID = "ir.mmd.androidDev.vault.model.AppSettings"
 		private const val serialVersionUID: Long = 1
@@ -30,6 +34,12 @@ class AppSettings private constructor() : Serializable {
 			get() = instance.closePreviewAfterCopy
 			set(value) {
 				instance.closePreviewAfterCopy = value
+			}
+		
+		var theme
+			get() = instance.theme
+			set(value) {
+				instance.theme = value
 			}
 		
 		fun load(context: Context) {
@@ -71,11 +81,15 @@ class AppSettings private constructor() : Serializable {
 	@JvmField
 	var closePreviewAfterCopy = true
 	
+	@JvmField
+	var theme: Theme = Theme.SystemDefault
+	
 	private fun readObject(inputStream: ObjectInputStream) {
 		inputStream.readFields().let {
 			authenticationEnabled = it["authenticationEnabled", false]
 			authenticationExpiresOnPause = it["authenticationExpiresOnPause", false]
 			closePreviewAfterCopy = it["closePreviewAfterCopy", true]
+			theme = it["theme", Theme.SystemDefault] as Theme
 		}
 	}
 }

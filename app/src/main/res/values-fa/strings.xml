@@ -34,4 +34,6 @@
     <string name="settings_close_preview_after_copy">بستن پیش‌نمایش پس از کپی کردن</string>
     <string name="text_okay">تایید</string>
     <string name="confirm_delete_item">آیا از حذف کردن این مورد اطمینان دارید؟</string>
+    <string name="text_selected_option">گزینه انتخاب شده</string>
+    <string name="text_theme">پوسته</string>
 </resources>

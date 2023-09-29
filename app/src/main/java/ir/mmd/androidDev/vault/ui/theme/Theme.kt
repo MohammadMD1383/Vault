@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import ir.mmd.androidDev.vault.model.AppSettings
 
 private val DarkColorScheme = darkColorScheme()
 private val LightColorScheme = lightColorScheme()
@@ -24,14 +25,14 @@ fun VaultTheme(
 	dynamicColor: Boolean = true,
 	content: @Composable () -> Unit
 ) {
-	val colorScheme = when {
-		dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-			val context = LocalContext.current
-			if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-		}
-		
-		darkTheme -> DarkColorScheme
-		else -> LightColorScheme
+	val context = LocalContext.current
+	val dynamic = dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+	val dark = if (dynamic) dynamicDarkColorScheme(context) else DarkColorScheme
+	val light = if (dynamic) dynamicLightColorScheme(context) else LightColorScheme
+	val colorScheme = when (AppSettings.theme) {
+		AppSettings.Theme.Dark -> dark
+		AppSettings.Theme.Light -> light
+		AppSettings.Theme.SystemDefault -> if (darkTheme) dark else light
 	}
 	
 	val view = LocalView.current

@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ir.mmd.androidDev.vault.model.AppSettings
+import ir.mmd.androidDev.vault.ui.component.Select
 import ir.mmd.androidDev.vault.ui.component.TextSwitch
 import ir.mmd.androidDev.vault.ui.theme.Typography
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
@@ -33,12 +34,20 @@ fun SettingsPage(navController: NavController) {
 	var authenticationEnabled by remember { mutableStateOf(AppSettings.authenticationEnabled) }
 	var authenticationExpiresOnPause by remember { mutableStateOf(AppSettings.authenticationExpiresOnPause) }
 	var closePreviewAfterCopy by remember { mutableStateOf(AppSettings.closePreviewAfterCopy) }
+	var theme by remember { mutableStateOf(AppSettings.theme) }
 	
 	Column(Modifier.fillMaxSize()) {
 		Text(
 			text = stringResource(R.string.text_settings),
 			style = Typography.headlineMedium,
 			modifier = Modifier.padding(24.dp)
+		)
+		
+		Select(
+			text = stringResource(R.string.text_theme),
+			options = AppSettings.Theme.entries,
+			selectedOption = theme,
+			onSelectionChange = { theme = it }
 		)
 		
 		TextSwitch(
@@ -75,6 +84,7 @@ fun SettingsPage(navController: NavController) {
 					AppSettings.authenticationEnabled = authenticationEnabled
 					AppSettings.authenticationExpiresOnPause = authenticationExpiresOnPause
 					AppSettings.closePreviewAfterCopy = closePreviewAfterCopy
+					AppSettings.theme = theme
 					AppSettings.save(context)
 					navController.popBackStack()
 				}

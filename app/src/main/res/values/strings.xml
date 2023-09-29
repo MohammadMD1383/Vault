@@ -33,4 +33,6 @@
     <string name="settings_close_preview_after_copy">Close preview after copy</string>
     <string name="text_okay">Okay</string>
     <string name="confirm_delete_item">Are you sure to delete this item?</string>
+    <string name="text_selected_option">Selected Option</string>
+    <string name="text_theme">Theme</string>
 </resources>
