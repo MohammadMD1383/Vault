@@ -25,6 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ir.mmd.androidDev.vault.R
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
+import ir.mmd.androidDev.vault.util.translate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,52 +37,47 @@ fun <T> Select(
 ) {
 	var expanded by remember { mutableStateOf(false) }
 	
-	Row(
-		verticalAlignment = Alignment.CenterVertically,
-		horizontalArrangement = Arrangement.SpaceBetween,
+	ExposedDropdownMenuBox(
+		expanded = expanded,
+		onExpandedChange = { expanded = it },
 		modifier = Modifier.padding(vertical = 12.dp, horizontal = 24.dp)
 	) {
-		ExposedDropdownMenuBox(
+		OutlinedTextField(
+			readOnly = true,
+			value = translate(selectedOption.toString()),
+			onValueChange = {},
+			label = { Text(text) },
+			trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+			colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
+			modifier = Modifier
+				.menuAnchor()
+				.fillMaxWidth()
+		)
+		
+		ExposedDropdownMenu(
 			expanded = expanded,
-			onExpandedChange = { expanded = it }
+			onDismissRequest = { expanded = false }
 		) {
-			OutlinedTextField(
-				readOnly = true,
-				value = selectedOption.toString(),
-				onValueChange = {},
-				label = { Text(text) },
-				trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
-				colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(),
-				modifier = Modifier
-					.menuAnchor()
-					.fillMaxWidth()
-			)
-			
-			ExposedDropdownMenu(
-				expanded = expanded,
-				onDismissRequest = { expanded = false }
-			) {
-				options.forEach {
-					DropdownMenuItem(
-						text = {
-							Row(
-								verticalAlignment = Alignment.CenterVertically,
-								horizontalArrangement = Arrangement.SpaceBetween,
-								modifier = Modifier.fillMaxWidth()
-							) {
-								Text(it.toString())
-								
-								if (selectedOption == it) {
-									Icon(Icons.Rounded.Check, stringResource(R.string.text_selected_option))
-								}
+			options.forEach {
+				DropdownMenuItem(
+					text = {
+						Row(
+							verticalAlignment = Alignment.CenterVertically,
+							horizontalArrangement = Arrangement.SpaceBetween,
+							modifier = Modifier.fillMaxWidth()
+						) {
+							Text(translate(it.toString()))
+							
+							if (selectedOption == it) {
+								Icon(Icons.Rounded.Check, stringResource(R.string.text_selected_option))
 							}
-						},
-						onClick = {
-							onSelectionChange(it)
-							expanded = false
 						}
-					)
-				}
+					},
+					onClick = {
+						onSelectionChange(it)
+						expanded = false
+					}
+				)
 			}
 		}
 	}

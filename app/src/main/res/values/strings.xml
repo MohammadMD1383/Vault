@@ -35,4 +35,7 @@
     <string name="confirm_delete_item">Are you sure to delete this item?</string>
     <string name="text_selected_option">Selected Option</string>
     <string name="text_theme">Theme</string>
+    <string name="tr_SystemDefault">System Default</string>
+    <string name="tr_Dark">Dark</string>
+    <string name="tr_Light">Light</string>
 </resources>

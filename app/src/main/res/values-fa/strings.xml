@@ -36,4 +36,7 @@
     <string name="confirm_delete_item">آیا از حذف کردن این مورد اطمینان دارید؟</string>
     <string name="text_selected_option">گزینه انتخاب شده</string>
     <string name="text_theme">پوسته</string>
+    <string name="tr_SystemDefault">پیش فرض سیستم</string>
+    <string name="tr_Dark">تیره</string>
+    <string name="tr_Light">روشن</string>
 </resources>
