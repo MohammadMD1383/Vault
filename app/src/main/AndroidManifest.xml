@@ -6,15 +6,20 @@
         android:name="android.permission.USE_BIOMETRIC"
         android:requiredFeature="false" />
 
+    <!--suppress DeprecatedClassUsageInspection -->
+    <uses-permission
+        android:name="android.permission.USE_FINGERPRINT"
+        android:requiredFeature="false" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.Vault"
         tools:targetApi="tiramisu">
 

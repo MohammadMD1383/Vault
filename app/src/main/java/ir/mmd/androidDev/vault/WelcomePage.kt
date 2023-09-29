@@ -23,21 +23,26 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import ir.mmd.androidDev.vault.model.AppSettings
 import ir.mmd.androidDev.vault.ui.theme.Typography
 import ir.mmd.androidDev.vault.ui.theme.VaultTheme
+import ir.mmd.androidDev.vault.util.navigateToHomePopWelcome
 
 @Composable
 fun WelcomePage(navController: NavController) {
 	val activity = LocalContext.current as MainActivity
-	val onAuthSuccess = remember {
+	val authenticate = remember {
 		{
-			if (!navController.popBackStack()) {
-				navController.navigate("home") {
-					launchSingleTop = true
-					popUpTo("welcome") {
-						inclusive = true
+			try {
+				activity.authenticate {
+					if (!navController.popBackStack()) {
+						navController.navigateToHomePopWelcome()
 					}
 				}
+			} catch (ignored: Exception) {
+				AppSettings.authenticationEnabled = false
+				AppSettings.save(activity)
+				navController.navigateToHomePopWelcome()
 			}
 		}
 	}
@@ -62,7 +67,7 @@ fun WelcomePage(navController: NavController) {
 					Modifier
 						.size(120.dp)
 						.clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {
-							activity.authenticate(onAuthSuccess)
+							authenticate()
 						},
 				)
 				
@@ -75,7 +80,7 @@ fun WelcomePage(navController: NavController) {
 	}
 	
 	LaunchedEffect(Unit) {
-		activity.authenticate(onAuthSuccess)
+		authenticate()
 	}
 }
 
