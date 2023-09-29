@@ -10,10 +10,10 @@ android {
 	compileSdk = 34
 	
 	defaultConfig {
-		applicationId = "ir.mmd.androidDev.vault.d"
+		applicationId = "ir.mmd.androidDev.vault"
 		minSdk = 26
 		targetSdk = 34
-		versionCode = 9
+		versionCode = 10
 		versionName = "2.4.0"
 		
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
