@@ -8,11 +8,11 @@ android {
 	compileSdk = 34
 	
 	defaultConfig {
-		applicationId = "ir.mmd.androidDev.vault"
+		applicationId = "ir.mmd.androidDev.vault.d"
 		minSdk = 26
 		targetSdk = 34
-		versionCode = 8
-		versionName = "2.3.0"
+		versionCode = 9
+		versionName = "2.4.0"
 		
 		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 		vectorDrawables {
