@@ -1,5 +1,6 @@
 package ir.mmd.androidDev.vault
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +40,8 @@ fun WelcomePage(navController: NavController) {
 						navController.navigateToHomePopWelcome()
 					}
 				}
-			} catch (ignored: Exception) {
+			} catch (exception: Exception) {
+				Log.e("AUTHENTICATION", "Exception while requesting authentication: ", exception)
 				AppSettings.authenticationEnabled = false
 				AppSettings.save(activity)
 				navController.navigateToHomePopWelcome()

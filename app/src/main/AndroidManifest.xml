@@ -6,11 +6,6 @@
         android:name="android.permission.USE_BIOMETRIC"
         android:requiredFeature="false" />
 
-    <!--suppress DeprecatedClassUsageInspection -->
-    <uses-permission
-        android:name="android.permission.USE_FINGERPRINT"
-        android:requiredFeature="false" />
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
