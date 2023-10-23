@@ -1,6 +1,7 @@
 package ir.mmd.androidDev.vault
 
 import android.os.Bundle
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
@@ -63,6 +64,10 @@ class MainActivity : FragmentActivity() {
 		// paint
 		super.onCreate(savedInstanceState)
 		setContent {
+			BackHandler {
+				finishAfterTransition()
+			}
+			
 			VaultTheme {
 				MainComponent(items)
 			}
