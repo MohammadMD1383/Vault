@@ -4,7 +4,6 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -85,7 +84,7 @@ import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 import ir.mmd.androidDev.vault.util.add
 import ir.mmd.androidDev.vault.util.onNavigationResult
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomePage(navController: NavController, items: SnapshotStateMap<String, String>) {
 	var searchFieldExpanded by remember { mutableStateOf(false) }

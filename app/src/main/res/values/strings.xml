@@ -1,6 +1,6 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Vault</string>
-    <string name="search_field_placeholder">Search ...</string>
+    <string name="search_field_placeholder">Search …</string>
     <string name="text_back">Back</string>
     <string name="text_clear">Clear</string>
     <string name="text_enabled">Enabled</string>
@@ -35,9 +35,9 @@
     <string name="confirm_delete_item">Are you sure to delete this item?</string>
     <string name="text_selected_option">Selected Option</string>
     <string name="text_theme">Theme</string>
-    <string name="tr_SystemDefault">System Default</string>
-    <string name="tr_Dark">Dark</string>
-    <string name="tr_Light">Light</string>
+    <string name="tr_SystemDefault" tools:keep="@string/tr_SystemDefault">System Default</string>
+    <string name="tr_Dark" tools:keep="@string/tr_Dark">Dark</string>
+    <string name="tr_Light" tools:keep="@string/tr_Light">Light</string>
     <string name="text_import_data">Import Data</string>
     <string name="text_export_data">Export Data</string>
 </resources>

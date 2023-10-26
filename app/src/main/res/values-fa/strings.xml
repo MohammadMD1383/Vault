@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">والت</string>
-    <string name="search_field_placeholder">جستجو ...</string>
+    <string name="search_field_placeholder">جستجو …</string>
     <string name="text_back">بازگشت</string>
     <string name="text_clear">پاک کردن</string>
     <string name="text_enabled">فعال</string>
@@ -36,9 +36,9 @@
     <string name="confirm_delete_item">آیا از حذف کردن این مورد اطمینان دارید؟</string>
     <string name="text_selected_option">گزینه انتخاب شده</string>
     <string name="text_theme">پوسته</string>
-    <string name="tr_SystemDefault">پیش فرض سیستم</string>
-    <string name="tr_Dark">تیره</string>
-    <string name="tr_Light">روشن</string>
+    <string name="tr_SystemDefault" tools:keep="@string/tr_SystemDefault">پیش فرض سیستم</string>
+    <string name="tr_Dark" tools:keep="@string/tr_Dark">تیره</string>
+    <string name="tr_Light" tools:keep="@string/tr_Light">روشن</string>
     <string name="text_import_data">وارد کردن اطلاعات</string>
     <string name="text_export_data">خروجی گرفتن اطلاعات</string>
 </resources>

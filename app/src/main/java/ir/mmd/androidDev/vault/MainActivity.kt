@@ -111,6 +111,7 @@ class MainActivity : FragmentActivity() {
 		exportDataLauncher.launch("vault.bak")
 	}
 	
+	@Suppress("MemberVisibilityCanBePrivate")
 	fun load() {
 		try {
 			openFileInput(ITEMS_ID).use { file ->
