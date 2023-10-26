@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import ir.mmd.androidDev.vault.model.AppSettings
+import ir.mmd.androidDev.vault.ui.component.ArrowButton
 import ir.mmd.androidDev.vault.ui.component.Select
 import ir.mmd.androidDev.vault.ui.component.TextSwitch
 import ir.mmd.androidDev.vault.ui.theme.Typography
@@ -31,6 +33,7 @@ import ir.mmd.androidDev.vault.ui.theme.VaultTheme
 @Composable
 fun SettingsPage(navController: NavController) {
 	val context = LocalContext.current
+	val mainActivity = context as MainActivity
 	var authenticationEnabled by remember { mutableStateOf(AppSettings.authenticationEnabled) }
 	var authenticationExpiresOnPause by remember { mutableStateOf(AppSettings.authenticationExpiresOnPause) }
 	var closePreviewAfterCopy by remember { mutableStateOf(AppSettings.closePreviewAfterCopy) }
@@ -71,6 +74,16 @@ fun SettingsPage(navController: NavController) {
 			onCheckedChange = { closePreviewAfterCopy = it },
 			modifier = Modifier.fillMaxWidth()
 		)
+		
+		Divider(Modifier.padding(16.dp))
+		
+		ArrowButton(stringResource(R.string.text_import_data)) {
+			mainActivity.importData()
+		}
+		
+		ArrowButton(stringResource(R.string.text_export_data)) {
+			mainActivity.exportData()
+		}
 		
 		Spacer(modifier = Modifier.weight(1f))
 		

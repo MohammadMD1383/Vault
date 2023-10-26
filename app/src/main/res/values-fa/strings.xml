@@ -39,4 +39,6 @@
     <string name="tr_SystemDefault">پیش فرض سیستم</string>
     <string name="tr_Dark">تیره</string>
     <string name="tr_Light">روشن</string>
+    <string name="text_import_data">وارد کردن اطلاعات</string>
+    <string name="text_export_data">خروجی گرفتن اطلاعات</string>
 </resources>

@@ -3,6 +3,7 @@ package ir.mmd.androidDev.vault
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
@@ -38,6 +39,26 @@ import java.util.concurrent.Executors
 class MainActivity : FragmentActivity() {
 	companion object {
 		private const val ITEMS_ID = "ir.mmd.androidDev.vault.MainActivity.items"
+	}
+	
+	private val exportDataLauncher = registerForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) {
+		it ?: return@registerForActivityResult
+		contentResolver.openOutputStream(it)?.use { outputStream ->
+			openFileInput(ITEMS_ID).use { inputStream ->
+				inputStream.copyTo(outputStream)
+			}
+		}
+	}
+	
+	private val importLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) {
+		it ?: return@registerForActivityResult
+		contentResolver.openInputStream(it)?.use { inputStream ->
+			openFileOutput(ITEMS_ID, MODE_PRIVATE).use { outputStream ->
+				inputStream.copyTo(outputStream)
+			}
+		}
+		
+		load()
 	}
 	
 	private val items = mutableStateMapOf<String, String>()
@@ -80,6 +101,14 @@ class MainActivity : FragmentActivity() {
 				runOnUiThread(onSuccess)
 			}
 		}).authenticate(promptInfo)
+	}
+	
+	fun importData() {
+		importLauncher.launch(arrayOf("*/*"))
+	}
+	
+	fun exportData() {
+		exportDataLauncher.launch("vault.bak")
 	}
 	
 	fun load() {

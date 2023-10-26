@@ -38,4 +38,6 @@
     <string name="tr_SystemDefault">System Default</string>
     <string name="tr_Dark">Dark</string>
     <string name="tr_Light">Light</string>
+    <string name="text_import_data">Import Data</string>
+    <string name="text_export_data">Export Data</string>
 </resources>
